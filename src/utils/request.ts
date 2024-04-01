@@ -3,10 +3,8 @@ import { message as $message, Modal } from 'antd';
 
 import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { ResultEnum } from '@/enums/httpEnum';
-import useUserStore from '@/stores/user.store.ts';
+import { useTokenStore } from '@/stores/user.store.ts';
 import { isString } from 'lodash';
-// import { useUserStore } from '@/stores/modules/user';
-// import { useSSEStore } from '@/stores/modules/sse';
 
 export interface RequestOptions extends AxiosRequestConfig {
   /** 是否直接将数据从响应中提取出，例如直接返回 res.data，而忽略 res.code 等信息 */
@@ -38,8 +36,7 @@ const service = axios.create({
 
 service.interceptors.request.use(
   (config) => {
-    const userStore = useUserStore();
-    const token = userStore.token;
+    const token = useTokenStore.getState().token;
     if (token && config.headers) {
       // 请求头token信息，请根据实际情况进行修改
       config.headers['Authorization'] = `Bearer ${token}`;
