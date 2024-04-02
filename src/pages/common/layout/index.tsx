@@ -6,22 +6,23 @@ import {
   ProLayout
 } from '@ant-design/pro-components';
 import { Button, ConfigProvider, Dropdown } from 'antd';
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { defaultSetting } from '@/config/default-setting.ts';
-import { useTokenStore } from '@/stores/user.store.ts';
+import { usePermissionStore, useTokenStore } from '@/stores/user.store.ts';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import customMenu from '@/pages/common/layout/customMenu.ts';
 
-const waitTime = (time: number = 100) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, time);
-  });
-};
 
-const serviceData: any[] = customMenu;
 export default () => {
+
+  const { menus, getPermissions } = usePermissionStore((state) => ({
+    menus: state.menus,
+    getPermissions: state.getPermissions
+  }));
+
+  useEffect(() => {
+    getPermissions();
+  }, [getPermissions]);
+
   const logout = useTokenStore((state) => () => state.logout());
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -30,6 +31,7 @@ export default () => {
     return <div />;
   }
   return (
+    menus && menus.length > 0 &&
     <div
       id="test-pro-layout"
       style={{
@@ -53,10 +55,7 @@ export default () => {
               }}
               siderMenuType="group"
               menu={{
-                request: async () => {
-                  await waitTime(10);
-                  return serviceData;
-                }
+                request: async () => menus || []
               }}
               avatarProps={{
                 src: 'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg',
