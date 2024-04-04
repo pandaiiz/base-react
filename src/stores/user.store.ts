@@ -20,8 +20,9 @@ const useTokenStore = create<TokenState>()(
         set({ token });
       },
       logout: async () => {
-        useTokenStore.persist.clearStorage();
-        useUserStore.persist.clearStorage();
+        localStorage.clear();
+        set({ token: '' });
+        window.location.href = '/login';
       }
     }),
     {
@@ -32,8 +33,6 @@ const useTokenStore = create<TokenState>()(
 
 interface UserState {
   userInfo: Info;
-  // perms: any[];
-  // menus: any[];
   getUserInfo: () => void;
 }
 
@@ -41,8 +40,6 @@ const useUserStore = create<UserState>()(
   persist(
     (set) => ({
       userInfo: {},
-      // perms: [],
-      // menus: [],
       getUserInfo: async () => {
         const { accountProfile } = Api.account;
         const userInfo = await accountProfile();

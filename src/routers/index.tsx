@@ -1,55 +1,50 @@
 // 这个主要是路由表组件的写法
-import { Suspense, lazy, LazyExoticComponent } from 'react';
-import { useRoutes, RouteObject } from 'react-router-dom';
-// 声明类型
-export type Routes = {
-  path: string,
-  component: LazyExoticComponent<any>,
-  children?: Routes[]
-}
-const RouteTable: Routes[] = [
+import { RouteObject, createBrowserRouter } from 'react-router-dom';
+import lazyLoad from '@/utils/lazyLoad.tsx';
+import Layout from '@/pages/common/layout';
+import Login from '@/pages/common/login';
+
+const RouteTable: RouteObject[] = [
   {
     path: '/',
-    component: lazy(() => import('@/pages/common/layout')),
+    element: <Layout />,
     children: [
       {
-        path: 'welcome',
-        component: lazy(() => import('@/pages/welcome')),
-        children: [
-          {
-            path: 'test',
-            component: lazy(() => import('@/pages/test'))
-          }
-        ]
+        index: true,
+        element: lazyLoad(() => import('@/pages/home'))
+      },
+      {
+        path: 'system',
+        children: [{
+          path: 'user',
+          element: lazyLoad(() => import('@/pages/system/user'))
+        }, {
+          path: 'role',
+          element: lazyLoad(() => import('@/pages/system/role'))
+        }]
+      },
+      {
+        path: 'netdisk',
+        children: [{
+          path: 'manage',
+          element: lazyLoad(() => import('@/pages/netdisk/manage'))
+        }]
       },
       {
         path: 'dashboard',
-        component: lazy(() => import('@/pages/dashboard')),
+        element: lazyLoad(() => import('@/pages/dashboard'))
       },
       {
         path: 'test',
-        component: lazy(() => import('@/pages/test')),
+        element: lazyLoad(() => import('@/pages/test'))
       }
     ]
+  },
+  {
+    path: '/login',
+    element: <Login />
   }
 ];
-
-const syncRouter = (table: Routes[]): RouteObject[] => {
-  const mRouteTable: RouteObject[] = [];
-  table.forEach(route => {
-    mRouteTable.push({
-      path: route.path,
-      element: (
-        <Suspense fallback={<div>路由加载ing...</div>}>
-          <route.component />
-        </Suspense>
-      ),
-      children: route.children && syncRouter(route.children)
-    });
-  });
-  return mRouteTable;
-};
-
 // 直接暴露成一个组件调用
-export default () => useRoutes(syncRouter(RouteTable))
+export const routers = createBrowserRouter(RouteTable);
 

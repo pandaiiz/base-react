@@ -31,7 +31,7 @@ const controller = new AbortController();
 const service = axios.create({
   baseURL: baseApiUrl,
   timeout: 10000,
-  signal: controller.signal,
+  signal: controller.signal
 });
 
 service.interceptors.request.use(
@@ -45,7 +45,7 @@ service.interceptors.request.use(
   },
   (error) => {
     Promise.reject(error);
-  },
+  }
 );
 
 service.interceptors.response.use(
@@ -67,7 +67,7 @@ service.interceptors.response.use(
           onOk: () => {
             localStorage.clear();
             window.location.reload();
-          },
+          }
         });
       }
 
@@ -89,9 +89,13 @@ service.interceptors.response.use(
       const errMsg = error?.response?.data?.message ?? UNKNOWN_ERROR;
       $message.error({ content: errMsg, key: errMsg });
       error.message = errMsg;
+      if (error.response.status === 401) {
+        localStorage.clear();
+        window.location.href = '/login';
+      }
+      return Promise.reject(error);
     }
-    return Promise.reject(error);
-  },
+  }
 );
 
 type BaseResponse<T = any> = Omit<API.ResOp, 'data'> & {
@@ -100,17 +104,17 @@ type BaseResponse<T = any> = Omit<API.ResOp, 'data'> & {
 
 export function request<T = any>(
   url: string,
-  config: { isReturnResult: false } & RequestOptions,
+  config: { isReturnResult: false } & RequestOptions
 ): Promise<BaseResponse<T>>;
 export function request<T = any>(
   url: string,
-  config: RequestOptions,
+  config: RequestOptions
 ): Promise<BaseResponse<T>['data']>;
 export function request<T = any>(
-  config: { isReturnResult: false } & RequestOptions,
+  config: { isReturnResult: false } & RequestOptions
 ): Promise<BaseResponse<T>>;
 export function request<T = any>(
-  config: RequestOptions,
+  config: RequestOptions
 ): Promise<BaseResponse<T>['data']>;
 /**
  *
@@ -119,7 +123,7 @@ export function request<T = any>(
  */
 export async function request(
   _url: string | RequestOptions,
-  _config: RequestOptions = {},
+  _config: RequestOptions = {}
 ) {
   const url = isString(_url) ? _url : _url.url;
   const config = isString(_url) ? _config : _url;
@@ -134,8 +138,8 @@ export async function request(
         ...rest.headers,
         ...(requestType === 'form'
           ? { 'Content-Type': 'multipart/form-data' }
-          : {}),
-      },
+          : {})
+      }
     })) as AxiosResponse<BaseResponse>;
     const { data } = response;
     const { code, message } = data || {};

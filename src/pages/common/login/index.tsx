@@ -10,7 +10,7 @@ import { useTokenStore, useUserStore } from '@/stores/user.store.ts';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const Login = () => {
+export default  () => {
   const { token } = theme.useToken();
   const navigate = useNavigate();
   const { login, loginToken } = useTokenStore((state) => ({
@@ -80,4 +80,3 @@ const Login = () => {
     </ProConfigProvider>
   );
 };
-export default Login;

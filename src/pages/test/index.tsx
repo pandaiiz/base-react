@@ -1,4 +1,3 @@
-const Test = () => {
+export default () => {
   return <>test</>;
 };
-export default Test;

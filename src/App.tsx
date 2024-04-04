@@ -1,7 +1,7 @@
 import './App.css';
 import { ConfigProvider } from 'antd';
-import Routes from '@/routers';
-import { BrowserRouter } from 'react-router-dom';
+import {  RouterProvider } from 'react-router-dom';
+import { routers } from '@/routers';
 
 function App() {
   return (
@@ -15,9 +15,7 @@ function App() {
         }
       }
     >
-      <BrowserRouter>
-        <Routes />
-      </BrowserRouter>
+      <RouterProvider router={routers} />
     </ConfigProvider>
   );
 }
