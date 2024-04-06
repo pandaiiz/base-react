@@ -8,6 +8,8 @@ export async function menuList(
   params: API.MenuListParams,
   options?: RequestOptions,
 ) {
+
+  console.log('params', params);
   return request<API.MenuItemInfo[]>('/api/system/menus', {
     method: 'GET',
     params: {

@@ -5,8 +5,8 @@ import {
   ProConfigProvider,
   ProLayout
 } from '@ant-design/pro-components';
-import { Button, ConfigProvider, Dropdown } from 'antd';
-import { Suspense, useEffect, useState } from 'react';
+import { ConfigProvider, Dropdown } from 'antd';
+import { Suspense, useEffect } from 'react';
 import { defaultSetting } from '@/config/default-setting.ts';
 import { usePermissionStore, useTokenStore } from '@/stores/user.store.ts';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
@@ -26,7 +26,6 @@ export default () => {
   const logout = useTokenStore((state) => () => state.logout());
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const [num, setNum] = useState(40);
   if (typeof document === 'undefined') {
     return <div />;
   }
@@ -105,22 +104,8 @@ export default () => {
             >
               <PageContainer
                 token={{
-                  paddingInlinePageContainerContent: num
+                  paddingInlinePageContainerContent: 40
                 }}
-                extra={[
-                  <Button key="3">操作</Button>,
-                  <Button key="2">操作</Button>,
-                  <Button
-                    key="1"
-                    type="primary"
-                    onClick={() => {
-                      setNum(num > 0 ? 0 : 40);
-                    }}
-                  >
-                    主操作
-                  </Button>
-                ]}
-                subTitle="简单的描述"
               >
                 <ProCard
                   style={{

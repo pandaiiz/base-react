@@ -9,26 +9,18 @@ const RouteTable: RouteObject[] = [
     path: '/',
     element: <Layout />,
     children: [
-      {
-        index: true,
-        element: lazyLoad(() => import('@/pages/home'))
-      },
+      { index: true, element: lazyLoad(() => import('@/pages/home')) },
       {
         path: 'system',
-        children: [{
-          path: 'user',
-          element: lazyLoad(() => import('@/pages/system/user'))
-        }, {
-          path: 'role',
-          element: lazyLoad(() => import('@/pages/system/role'))
-        }]
+        children: [
+          { path: 'user', element: lazyLoad(() => import('@/pages/system/user')) },
+          { path: 'role', element: lazyLoad(() => import('@/pages/system/role')) },
+          { path: 'menu', element: lazyLoad(() => import('@/pages/system/menu')) }
+        ]
       },
       {
         path: 'netdisk',
-        children: [{
-          path: 'manage',
-          element: lazyLoad(() => import('@/pages/netdisk/manage'))
-        }]
+        children: [{ path: 'manage', element: lazyLoad(() => import('@/pages/netdisk/manage')) }]
       },
       {
         path: 'dashboard',
