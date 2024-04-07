@@ -1,8 +1,9 @@
-import { DownOutlined } from '@ant-design/icons';
-import type { ProColumns } from '@ant-design/pro-components';
+import { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 import { Button } from 'antd';
 import { menuList } from '@/api/backend/api/systemMenu.ts';
+import { baseColumns } from '@/pages/system/menu/columns.tsx';
+import { useRef, useState } from 'react';
 
 const valueEnum = {
   0: 'close',
@@ -40,19 +41,31 @@ for (let i = 0; i < 5; i += 1) {
 }
 
 const columns: ProColumns<TableListItem>[] = [
+  ...baseColumns,
   {
-    title: '应用名称',
-    width: 80,
-    dataIndex: 'name',
-    render: (_) => <a>{_}</a>
-  },
-  {
-    title: '容器数量',
-    dataIndex: 'containers',
-    align: 'right',
-    sorter: (a, b) => a.containers - b.containers
-  },
-  {
+    title: '操作',
+    valueType: 'option',
+    key: 'option', align: 'center',
+    width: 120,
+    fixed: 'right',
+    render: (_text, record, _, action) => [
+      <a
+        key="editable"
+        onClick={() => {
+          action?.startEditable?.(record.id);
+        }}
+      >
+        编辑
+      </a>,
+      <a href={record.url} target="_blank" rel="noopener noreferrer" key="view">
+        查看
+      </a>,
+      <a href={record.url} target="_blank" rel="noopener noreferrer" key="delete">
+        删除
+      </a>
+    ]
+  }
+  /*{
     title: '状态',
     width: 80,
     dataIndex: 'status',
@@ -74,13 +87,33 @@ const columns: ProColumns<TableListItem>[] = [
     dataIndex: 'createdAt',
     valueType: 'date',
     sorter: (a, b) => a.createdAt - b.createdAt
-  }
+  }*/
 ];
 
 export default () => {
+  const [expandKeys, setExpandKeys] = useState<any[]>([]);
+  const actionRef = useRef<ActionType>();
+
+  const getAllKeys = (data: any[]): any[] => {
+    const keys: string[] = [];
+    data.forEach((item) => {
+      keys.push(item.id);
+      const children = item['children'];
+      if (children?.length) {
+        keys.push(...getAllKeys(children));
+      }
+    });
+    return keys;
+  }
+  const dataSourceRef = useRef<any>();
+
   return (
     <ProTable<TableListItem>
+      onDataSourceChange={(data) => {
+        dataSourceRef.current = data;
+      }}
       columns={columns}
+      actionRef={actionRef}
       request={async (params, sorter, filter) => {
         // 表单搜索项会从 params 传入，传递给后端接口。
         console.log(params, sorter, filter);
@@ -103,16 +136,20 @@ export default () => {
         optionRender: false,
         collapsed: false
       }}
+      expandable={{ expandedRowKeys: expandKeys }}
+      columnEmptyText={false}
       dateFormatter="string"
-      headerTitle="表格标题"
+      headerTitle="菜单管理"
+      scroll={{ x: 2000, y: 800 }}
       toolBarRender={() => [
-        <Button key="show">查看日志</Button>,
-        <Button key="out">
-          导出数据
-          <DownOutlined />
-        </Button>,
+        <Button key="open" onClick={() => {
+          setExpandKeys(getAllKeys(dataSourceRef.current))
+        }}>展开全部</Button>,
+        <Button key="close" onClick={() => {
+          setExpandKeys([])
+        }}>折叠全部</Button>,
         <Button type="primary" key="primary">
-          创建应用
+          新增
         </Button>
       ]}
     />
