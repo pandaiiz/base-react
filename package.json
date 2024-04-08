@@ -12,6 +12,7 @@
   "dependencies": {
     "@ant-design/icons": "^4.8.2",
     "@ant-design/pro-components": "^2.6.50",
+    "@ebay/nice-modal-react": "^1.2.13",
     "@emotion/css": "^11.11.2",
     "@types/node": "^20.12.2",
     "antd": "^5.15.3",

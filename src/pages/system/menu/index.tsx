@@ -4,6 +4,8 @@ import { Button } from 'antd';
 import { menuList } from '@/api/backend/api/systemMenu.ts';
 import { baseColumns } from '@/pages/system/menu/columns.tsx';
 import { useRef, useState } from 'react';
+import { useModal } from '@ebay/nice-modal-react';
+import { MenuModal } from '@/pages/system/menu/menu-modal';
 
 const valueEnum = {
   0: 'close',
@@ -40,57 +42,28 @@ for (let i = 0; i < 5; i += 1) {
   });
 }
 
-const columns: ProColumns<TableListItem>[] = [
-  ...baseColumns,
-  {
-    title: '操作',
-    valueType: 'option',
-    key: 'option', align: 'center',
-    width: 120,
-    fixed: 'right',
-    render: (_text, record, _, action) => [
-      <a
-        key="editable"
-        onClick={() => {
-          action?.startEditable?.(record.id);
-        }}
-      >
-        编辑
-      </a>,
-      <a href={record.url} target="_blank" rel="noopener noreferrer" key="view">
-        查看
-      </a>,
-      <a href={record.url} target="_blank" rel="noopener noreferrer" key="delete">
-        删除
-      </a>
-    ]
-  }
-  /*{
-    title: '状态',
-    width: 80,
-    dataIndex: 'status',
-    initialValue: 'all',
-    valueEnum: {
-      all: { text: '全部', status: 'Default' },
-      close: { text: '关闭', status: 'Default' },
-      running: { text: '运行中', status: 'Processing' },
-      online: { text: '已上线', status: 'Success' },
-      error: { text: '异常', status: 'Error' }
-    }
-  },
-  {
-    title: '创建时间',
-    tooltip: '这是一段描述',
-    width: 140,
-    key: 'since',
-    hideInSearch: true,
-    dataIndex: 'createdAt',
-    valueType: 'date',
-    sorter: (a, b) => a.createdAt - b.createdAt
-  }*/
-];
-
 export default () => {
+  const modal = useModal(MenuModal);
+
+
+  const columns: ProColumns<TableListItem>[] = [
+    ...baseColumns,
+    {
+      title: '操作',
+      valueType: 'option',
+      key: 'option', align: 'center',
+      width: 160,
+      fixed: 'right',
+      render: (_text, record) => [
+        <Button type="link" key="edit" onClick={() => modal.show({ data: record, type: 'edit' })}>
+          编辑
+        </Button>,
+        <Button type="link" key="add" onClick={() => modal.show()}>新增</Button>
+        // <Button type="link" key="delete" onClick={() => modal.show({ data: record, title: '编辑' })}>删除</Button>,
+      ]
+    }
+  ];
+
   const [expandKeys, setExpandKeys] = useState<any[]>([]);
   const actionRef = useRef<ActionType>();
 
@@ -104,7 +77,7 @@ export default () => {
       }
     });
     return keys;
-  }
+  };
   const dataSourceRef = useRef<any>();
 
   return (
@@ -114,9 +87,11 @@ export default () => {
       }}
       columns={columns}
       actionRef={actionRef}
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       request={async (params, sorter, filter) => {
         // 表单搜索项会从 params 传入，传递给后端接口。
-        console.log(params, sorter, filter);
+        // console.log(params, sorter, filter);
         const data = await menuList({ name: params.name });
 
         return {
@@ -136,19 +111,19 @@ export default () => {
         optionRender: false,
         collapsed: false
       }}
-      expandable={{ expandedRowKeys: expandKeys }}
+      expandable={{ expandedRowKeys: expandKeys.length === 0 ? undefined : expandKeys }}
       columnEmptyText={false}
       dateFormatter="string"
       headerTitle="菜单管理"
       scroll={{ x: 2000, y: 800 }}
       toolBarRender={() => [
         <Button key="open" onClick={() => {
-          setExpandKeys(getAllKeys(dataSourceRef.current))
+          setExpandKeys(getAllKeys(dataSourceRef.current));
         }}>展开全部</Button>,
         <Button key="close" onClick={() => {
-          setExpandKeys([])
+          setExpandKeys([]);
         }}>折叠全部</Button>,
-        <Button type="primary" key="primary">
+        <Button type="primary" key="primary" onClick={() => modal.show()}>
           新增
         </Button>
       ]}
