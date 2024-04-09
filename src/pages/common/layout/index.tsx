@@ -1,7 +1,6 @@
 import { LogoutOutlined } from '@ant-design/icons';
 import {
   PageContainer,
-  ProCard,
   ProConfigProvider,
   ProLayout
 } from '@ant-design/pro-components';
@@ -46,7 +45,6 @@ export default () => {
         >
           <Suspense fallback={<h2>加载中....</h2>}>
             <ProLayout
-
               /*headerContentRender={() => {
                 return <ProBreadcrumb />;
               }}*/
@@ -107,12 +105,10 @@ export default () => {
               {...defaultSetting}
             >
               <PageContainer
-                header={{ breadcrumb: {} }}
+                header={{ breadcrumb: {}, title: '' }}
                 token={{ paddingInlinePageContainerContent: 40 }}
               >
-                <ProCard style={{ minHeight: 800 }}>
-                  <Outlet />
-                </ProCard>
+                <Outlet />
               </PageContainer>
             </ProLayout>
           </Suspense>

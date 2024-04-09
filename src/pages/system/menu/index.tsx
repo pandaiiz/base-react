@@ -58,7 +58,6 @@ export default () => {
     }
   ];
 
-
   const getAllKeys = (data: any[]): any[] => {
     const keys: string[] = [];
     data.forEach((item) => {
@@ -80,18 +79,15 @@ export default () => {
       columns={columns}
       actionRef={actionRef}
       request={async (params) => {
+        if (params.name === '') delete params.name;
+        if (params.path === '') delete params.path;
+        if (params.component === '') delete params.component;
         // 表单搜索项会从 params 传入，传递给后端接口。
-        const data = await menuList({ name: params.name });
+        const data = await menuList(params as API.MenuListParams);
         return { data, success: true };
       }}
       rowKey="id"
-      pagination={{
-        showQuickJumper: true
-      }}
-      search={{
-        optionRender: false,
-        collapsed: false
-      }}
+      pagination={false}
       expandable={{ expandedRowKeys: expandKeys.length === 0 ? undefined : expandKeys }}
       columnEmptyText={false}
       dateFormatter="string"
