@@ -58,7 +58,7 @@ interface UserPermissionState {
   getPermissions: () => void;
 }
 
-const usePermissionStore = create<UserPermissionState>((set) => ({
+/*const usePermissionStore = create<UserPermissionState>((set) => ({
   permissions: [],
   menus: [],
   getPermissions: async () => {
@@ -67,6 +67,34 @@ const usePermissionStore = create<UserPermissionState>((set) => ({
       await Promise.all([accountPermissions(), accountMenu()]);
     set(() => ({ permissions, menus }));
   }
-}));
+}));*/
+/*const usePermissionStore = create<UserPermissionState>((set) => ({
+  permissions: [],
+  menus: [],
+  getPermissions: async () => {
+    const { accountPermissions, accountMenu } = Api.account;
+    const [permissions, menus] =
+      await Promise.all([accountPermissions(), accountMenu()]);
+    set(() => ({ permissions, menus }));
+  }
+}));*/
+
+const usePermissionStore = create<UserPermissionState>()(
+  persist(
+    (set) => ({
+      permissions: [],
+      menus: [],
+      getPermissions: async () => {
+        const { accountPermissions, accountMenu } = Api.account;
+        const [permissions, menus] =
+          await Promise.all([accountPermissions(), accountMenu()]);
+        set(() => ({ permissions, menus }));
+      }
+    }),
+    {
+      name: 'userPermissions'
+    }
+  )
+);
 
 export { useUserStore, useTokenStore, usePermissionStore } ;

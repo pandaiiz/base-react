@@ -40,7 +40,7 @@ function App() {
         }
       }
     >
-      <RouterProvider router={routers} />
+      <RouterProvider router={routers} fallbackElement={<div>Loading...</div>} />
     </ConfigProvider>
   );
 }
