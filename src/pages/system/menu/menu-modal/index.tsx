@@ -4,7 +4,7 @@ import {
   ProForm,
   ProFormCascader,
   ProFormDependency,
-  ProFormDigit,
+  ProFormDigit, ProFormInstance,
   ProFormRadio,
   ProFormText,
   ProFormTreeSelect
@@ -12,6 +12,7 @@ import {
 import { str2tree } from '@/utils/common.ts';
 import { asyncRoutes } from '@/routers/asyncModules';
 import { Api } from '@/api';
+import { useRef } from 'react';
 
 /** 菜单类型 0: 目录 | 1: 菜单 | 2: 按钮 */
 const isDir = (type: API.MenuDto['type']) => type === 0;
@@ -19,48 +20,46 @@ const isMenu = (type: API.MenuDto['type']) => type === 1;
 const isButton = (type: API.MenuDto['type']) => type === 2;
 export const MenuModal =
   NiceModal.create(({ data, type = 'add' }: { data: any; type: string; }) => {
+    console.log(data);
     const modal = useModal();
+    const formRef = useRef<ProFormInstance>();
+    let initialValues: any = { type: 0, show: 1, status: 1, orderNo: 0 };
+    // 从列表新增，自动填充父级菜单
+    if (type === 'add' && data) {
+      initialValues = { ...initialValues, parentId: data.id || -1 };
+    }
+    // 直接新增，填充
+    if (type === 'edit') {
+      initialValues = { ...data, parentId: data.parentId || -1 };
+    }
+
     return (
       <Modal
         title={type === 'add' ? '新增' : '编辑'}
         open={modal.visible}
-        onOk={modal.hide}
-        onCancel={modal.hide}
-        afterClose={modal.remove}
+        onOk={async () => {
+          const values = await formRef.current?.validateFields?.();
+          modal.resolve({ ...values, isExt: false, parentId: values.parentId === -1 ? undefined : values.parentId });
+        }}
+        onCancel={modal.remove}
+        maskClosable={false}
       >
         <ProForm<{
           name: string;
           company?: string;
           useMode?: string;
         }>
-          initialValues={{ ...data, parentId: data.parentId || -1 }}
+          formRef={formRef}
+          initialValues={initialValues}
           labelCol={{ span: 6 }}
           wrapperCol={{ span: 16 }}
           submitter={false}
           layout="horizontal"
-          /*submitter={{
-            render: (props, doms) => {
-              return formLayoutType === LAYOUT_TYPE_HORIZONTAL ? (
-                <Row>
-                  <Col span={14} offset={4}>
-                    <Space>{doms}</Space>
-                  </Col>
-                </Row>
-              ) : (
-                doms
-              );
-            },
-          }}*/
-          onFinish={async (values) => {
-            // await waitTime(2000);
-            console.log(values);
-            // message.success('提交成功');
-          }}
         >
           <ProFormRadio.Group
-            required
             name="type"
             label="菜单类型"
+            rules={[{ required: true }]}
             options={[
               { label: '目录', value: 0 },
               { label: '菜单', value: 1 },
@@ -68,14 +67,13 @@ export const MenuModal =
             ]}
           />
           <ProFormText
-            required
+            rules={[{ required: true }]}
             name="name"
             label="权限/节点名称"
             placeholder="请输入权限名称/节点名称"
-
           />
           <ProFormTreeSelect
-            required
+            rules={[{ required: true }]}
             label="上级节点"
             name="parentId"
             allowClear
@@ -97,13 +95,13 @@ export const MenuModal =
           <ProFormDependency name={['type']}>
             {({ type }) =>
               <>
-                {!isDir(type) && <ProFormText name="permission" label="权限" required={isButton(type)} />}
-                {!isButton(type) && <ProFormText name="path" label="路由地址" required />}
+                {!isDir(type) && <ProFormText name="permission" label="权限" rules={[{ required: isButton(type) }]} />}
+                {!isButton(type) && <ProFormText name="path" label="路由地址" rules={[{ required: true }]} />}
                 {isMenu(type) &&
                   <ProFormCascader
                     name="component"
                     label="文件路径"
-                    required
+                    rules={[{ required: true }]}
                     fieldProps={{
                       options: Object.keys(asyncRoutes).reduce(
                         (prev, curr) => (str2tree(curr, prev, '/'), prev),
@@ -128,7 +126,7 @@ export const MenuModal =
           <ProFormDigit
             label="排序号"
             name="orderNo"
-            min={1}
+            min={0}
             max={255}
             fieldProps={{ precision: 0 }}
           />

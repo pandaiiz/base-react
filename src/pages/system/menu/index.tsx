@@ -1,51 +1,46 @@
 import { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
-import { Button } from 'antd';
+import { Button, Modal } from 'antd';
 import { menuList } from '@/api/backend/api/systemMenu.ts';
 import { baseColumns } from '@/pages/system/menu/columns.tsx';
 import { useRef, useState } from 'react';
 import { useModal } from '@ebay/nice-modal-react';
 import { MenuModal } from '@/pages/system/menu/menu-modal';
+import { ExclamationCircleFilled } from '@ant-design/icons';
+import { Api } from '@/api';
 
-const valueEnum = {
-  0: 'close',
-  1: 'running',
-  2: 'online',
-  3: 'error'
-};
-
-export type TableListItem = {
-  key: number;
-  name: string;
-  containers: number;
-  creator: string;
-  status: string;
-  createdAt: number;
-  memo: string;
-};
-const tableListDataSource: TableListItem[] = [];
-
-const creators = ['付小小', '曲丽丽', '林东东', '陈帅帅', '兼某某'];
-
-for (let i = 0; i < 5; i += 1) {
-  tableListDataSource.push({
-    key: i,
-    name: 'AppName',
-    containers: Math.floor(Math.random() * 20),
-    creator: creators[Math.floor(Math.random() * creators.length)],
-    status: valueEnum[((Math.floor(Math.random() * 10) % 4) + '') as '0'],
-    createdAt: Date.now() - Math.floor(Math.random() * 100000),
-    memo:
-      i % 2 === 1
-        ? '很长很长很长很长很长很长很长的文字要展示但是要留下尾巴'
-        : '简短备注文案'
+export type TableListItem = any
+const { confirm } = Modal;
+const deleteConfirm = (record: any, ref: any) => {
+  confirm({
+    title: '确认删除吗？',
+    icon: <ExclamationCircleFilled />,
+    content: '删除后不可恢复！',
+    onOk() {
+      Api.systemMenu.menuDelete({ id: record.id }).then(() => ref.current.reload());
+    }
   });
-}
+};
+const menuCreate = async (modal: any, record: any, ref: any) => {
+  const values: API.MenuDto = await modal.show({ data: record });
+  await Api.systemMenu.menuCreate(values as API.MenuDto);
+  modal.remove();
+  ref.current?.reload();
+};
+
+const menuUpdate = async (modal: any, record: any, ref: any) => {
+  const values: API.MenuDto = await modal.show({ data: record, type: 'edit' });
+  await Api.systemMenu.menuUpdate({ id: record.id }, values as API.MenuDto);
+  modal.remove();
+  ref.current?.reload();
+};
+
 
 export default () => {
   const modal = useModal(MenuModal);
 
-
+  const [expandKeys, setExpandKeys] = useState<any[]>([]);
+  const actionRef = useRef<ActionType>();
   const columns: ProColumns<TableListItem>[] = [
     ...baseColumns,
     {
@@ -55,17 +50,14 @@ export default () => {
       width: 160,
       fixed: 'right',
       render: (_text, record) => [
-        <Button type="link" key="edit" onClick={() => modal.show({ data: record, type: 'edit' })}>
-          编辑
-        </Button>,
-        <Button type="link" key="add" onClick={() => modal.show()}>新增</Button>
-        // <Button type="link" key="delete" onClick={() => modal.show({ data: record, title: '编辑' })}>删除</Button>,
+        <Button type="link" key="add" onClick={() => menuCreate(modal, record, actionRef)}
+                disabled={record.type === 2}>新增</Button>,
+        <Button type="link" key="edit" onClick={() => menuUpdate(modal, record, actionRef)}>编辑</Button>,
+        <Button type="link" key="delete" onClick={() => deleteConfirm(record, actionRef)}>删除</Button>
       ]
     }
   ];
 
-  const [expandKeys, setExpandKeys] = useState<any[]>([]);
-  const actionRef = useRef<ActionType>();
 
   const getAllKeys = (data: any[]): any[] => {
     const keys: string[] = [];
@@ -87,21 +79,10 @@ export default () => {
       }}
       columns={columns}
       actionRef={actionRef}
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      request={async (params, sorter, filter) => {
+      request={async (params) => {
         // 表单搜索项会从 params 传入，传递给后端接口。
-        // console.log(params, sorter, filter);
         const data = await menuList({ name: params.name });
-
-        return {
-          data,
-          // success 请返回 true，
-          // 不然 table 会停止解析数据，即使有数据
-          success: true
-          // 不传会使用 data 的长度，如果是分页一定要传
-          // total: number,
-        };
+        return { data, success: true };
       }}
       rowKey="id"
       pagination={{
@@ -114,7 +95,6 @@ export default () => {
       expandable={{ expandedRowKeys: expandKeys.length === 0 ? undefined : expandKeys }}
       columnEmptyText={false}
       dateFormatter="string"
-      headerTitle="菜单管理"
       scroll={{ x: 2000, y: 800 }}
       toolBarRender={() => [
         <Button key="open" onClick={() => {

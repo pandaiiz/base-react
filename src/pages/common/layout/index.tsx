@@ -44,8 +44,12 @@ export default () => {
             return document.getElementById('test-pro-layout') || document.body;
           }}
         >
-          <Suspense fallback={<h2>加载中11....</h2>}>
+          <Suspense fallback={<h2>加载中....</h2>}>
             <ProLayout
+
+              /*headerContentRender={() => {
+                return <ProBreadcrumb />;
+              }}*/
               location={{ pathname }}
               token={{
                 header: {
@@ -103,16 +107,10 @@ export default () => {
               {...defaultSetting}
             >
               <PageContainer
-                token={{
-                  paddingInlinePageContainerContent: 40
-                }}
+                header={{ breadcrumb: {} }}
+                token={{ paddingInlinePageContainerContent: 40 }}
               >
-                <ProCard
-                  style={{
-                    // height: '200vh',
-                    minHeight: 800
-                  }}
-                >
+                <ProCard style={{ minHeight: 800 }}>
                   <Outlet />
                 </ProCard>
               </PageContainer>

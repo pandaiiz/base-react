@@ -9,7 +9,6 @@ export async function menuList(
   options?: RequestOptions,
 ) {
 
-  console.log('params', params);
   return request<API.MenuItemInfo[]>('/api/system/menus', {
     method: 'GET',
     params: {
