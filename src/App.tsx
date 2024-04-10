@@ -1,9 +1,10 @@
 import './App.css';
 import { ConfigProvider } from 'antd';
-import { RouterProvider } from 'react-router-dom';
-import { routers } from '@/routers';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import useRouters from '@/routers';
 
 function App() {
+  const routes = useRouters();
   return (
     <ConfigProvider
       theme={
@@ -15,7 +16,7 @@ function App() {
         }
       }
     >
-      <RouterProvider router={routers} fallbackElement={<div>Loading...</div>} />
+      <RouterProvider router={createBrowserRouter(routes)} />
     </ConfigProvider>
   );
 }
