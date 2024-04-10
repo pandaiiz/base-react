@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-import type { DataNode } from 'ant-design-vue/es/vc-tree-select/interface';
 
 /**
  * @description 处理首字母大写 abc => Abc
@@ -56,7 +55,7 @@ export const isBase64 = (str: string): boolean => {
   }
 };
 // 对象转JSON
-export const toJSON = (obj) => {
+export const toJSON = (obj: any) => {
   return JSON.stringify(obj, (_, value) => {
     switch (true) {
       case typeof value === 'undefined':
@@ -82,7 +81,7 @@ export const IS_DEV = import.meta.env.DEV;
  * @description 格式化日期
  * @param time
  */
-export const formatDate = (time) => dayjs(time).format('YYYY-MM-DD HH:mm:ss');
+export const formatDate = (time: string | number | Date | dayjs.Dayjs | null | undefined) => dayjs(time).format('YYYY-MM-DD HH:mm:ss');
 
 /**
  *  @description 将一维数组转成树形结构数据
@@ -90,7 +89,9 @@ export const formatDate = (time) => dayjs(time).format('YYYY-MM-DD HH:mm:ss');
  * @param id
  * @param link
  */
-export const generateTree = (items, id = 0, link = 'parent') => {
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+export const generateTree = (items: any[], id = 0, link = 'parent') => {
   return items
     .filter((item) => item[link] == id)
     .map((item) => ({
@@ -104,7 +105,7 @@ export const generateTree = (items, id = 0, link = 'parent') => {
  * / _ - 转换成驼峰并将view替换成空字符串
  * @param {*} name name
  */
-export const toHump = (name) => {
+export const toHump = (name: string) => {
   return name
     .replace(/[-/_](\w)/g, (_, letter) => {
       return letter.toUpperCase();
@@ -150,14 +151,14 @@ export function findPath<T extends Key>(
   return null;
 }
 
-export const str2tree = (str: string, treeData: DataNode[] = [], separator = ':') => {
+export const str2tree = (str: string, treeData: any[] = [], separator = ':') => {
   return str.split(separator).reduce((prev, curr, currentIndex, arr) => {
     const path = arr.slice(0, currentIndex + 1).join(':');
     const index = prev.findIndex((item) => item?.path === path);
     if (index !== -1) {
       return prev[index].children;
     } else {
-      const item: DataNode = {
+      const item: any = {
         // key: curr,
         path,
         value: curr,

@@ -4,7 +4,6 @@ import { persist } from 'zustand/middleware';
 
 type Info = Record<string, any> | null;
 
-
 interface TokenState {
   token: string | null;
   login: (params: API.LoginDto) => void;
@@ -57,27 +56,6 @@ interface UserPermissionState {
   menus: any[];
   getPermissions: () => void;
 }
-
-/*const usePermissionStore = create<UserPermissionState>((set) => ({
-  permissions: [],
-  menus: [],
-  getPermissions: async () => {
-    const { accountPermissions, accountMenu } = Api.account;
-    const [permissions, menus] =
-      await Promise.all([accountPermissions(), accountMenu()]);
-    set(() => ({ permissions, menus }));
-  }
-}));*/
-/*const usePermissionStore = create<UserPermissionState>((set) => ({
-  permissions: [],
-  menus: [],
-  getPermissions: async () => {
-    const { accountPermissions, accountMenu } = Api.account;
-    const [permissions, menus] =
-      await Promise.all([accountPermissions(), accountMenu()]);
-    set(() => ({ permissions, menus }));
-  }
-}));*/
 
 const usePermissionStore = create<UserPermissionState>()(
   persist(

@@ -1,12 +1,14 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const ErrorPage = () => {
+  const [notFound, setNotFound] = useState(false);
   const { pathname } = useLocation();
   const navigate = useNavigate();
   useEffect(() => {
     navigate(pathname);
-  }, [pathname]);
-  return <>404</>;
+    setNotFound(true);
+  }, [navigate, pathname]);
+  return notFound && <>404</>;
 };
 export default ErrorPage;
