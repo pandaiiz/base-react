@@ -4,7 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import useRouters from '@/routers';
 
 function App() {
-  const routes = useRouters();
+  const routers = useRouters();
   return (
     <ConfigProvider
       theme={
@@ -16,7 +16,7 @@ function App() {
         }
       }
     >
-      <RouterProvider router={createBrowserRouter(routes)} />
+      <RouterProvider router={createBrowserRouter(routers)} />
     </ConfigProvider>
   );
 }
