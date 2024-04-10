@@ -61,7 +61,7 @@ export default () => {
               avatarProps={{
                 src: 'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg',
                 size: 'small',
-                title: '七妮妮',
+                title: '帅气许哥哥',
                 render: (_props, dom) => {
                   return (
                     <Dropdown
@@ -72,7 +72,6 @@ export default () => {
                             icon: <LogoutOutlined />,
                             label: '退出登录',
                             onClick: () => logout()
-
                           }
                         ]
                       }}
