@@ -2,10 +2,9 @@ import { Modal } from 'antd';
 import NiceModal, { useModal } from '@ebay/nice-modal-react';
 import {
   ProForm, ProFormDigit, ProFormInstance,
-  ProFormText, ProFormTreeSelect
+  ProFormText
 } from '@ant-design/pro-components';
 import { useRef } from 'react';
-import { deptList } from '@/api/backend/api/systemDept.ts';
 
 export const DeptModal =
   NiceModal.create(({ data, type = 'add' }: { data: any; type: string }) => {
@@ -40,9 +39,7 @@ export const DeptModal =
             name="name"
             label="部门名称"
           />
-          <ProFormTreeSelect label="上级部门" name="parentId"
-                             fieldProps={{ fieldNames: { label: 'name', value: 'id' } }} request={() => deptList({})} />
-          <ProFormDigit
+         <ProFormDigit
             label="排序号"
             name="orderNo"
             min={0}

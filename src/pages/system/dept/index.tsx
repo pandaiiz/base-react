@@ -23,7 +23,7 @@ const deptCreate = async (modal: any, ref: any) => {
 };
 
 const deptUpdate = async (modal: any, record: any, ref: any) => {
-  const values: API.DeptDto = await modal.show({ data: { ...record, parentId: record.parent.id }, type: 'edit' });
+  const values: API.DeptDto = await modal.show({ data: { ...record, parentId: record.parentId }, type: 'edit' });
   try {
     await Api.systemDept.deptUpdate({ id: record.id }, values as API.DeptDto);
     modal.remove();
