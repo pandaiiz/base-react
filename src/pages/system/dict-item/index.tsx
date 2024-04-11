@@ -1,13 +1,14 @@
-import { ActionType, ProColumns } from '@ant-design/pro-components';
+import { ActionType, ProColumns, ProFormInstance } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 import { Button } from 'antd';
 import { baseColumns } from '@/pages/system/dict-item/columns.tsx';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useModal } from '@ebay/nice-modal-react';
 import { Api } from '@/api';
 import deleteConfirm from '@/components/common/DeleteConfirm';
 import { DictItemModal } from '@/pages/system/dict-item/dict-item-modal';
 import { dictItemList } from '@/api/backend/api/systemDictItem.ts';
+import { useParams } from 'react-router-dom';
 
 export type TableListItem = any
 const dictItemCreate = async (modal: any, ref: any) => {
@@ -36,8 +37,19 @@ const dictItemUpdate = async (modal: any, record: any, ref: any) => {
 
 export default () => {
   const modal = useModal(DictItemModal);
+  const { id } = useParams();
+
 
   const actionRef = useRef<ActionType>();
+  const formRef = useRef<ProFormInstance>();
+
+  useEffect(() => {
+    if (id && formRef.current) {
+      formRef.current.setFieldsValue({ typeId: Number(id) });
+    }
+  }, [formRef, id]);
+
+
   const columns: ProColumns<TableListItem>[] = [
     ...baseColumns,
     {
@@ -47,7 +59,8 @@ export default () => {
       width: 160,
       fixed: 'right',
       render: (_text, record) => [
-        <Button type="link" key="edit" onClick={() => dictItemUpdate(modal, record, actionRef)}>编辑</Button>,
+        <Button type="link" key="edit"
+                onClick={() => dictItemUpdate(modal, { ...record, typeId: Number(id) }, actionRef)}>编辑</Button>,
         <Button type="link" key="delete"
                 onClick={() => deleteConfirm(Api.systemDictItem.dictItemDelete, record, actionRef)}>删除</Button>
       ]
@@ -63,12 +76,16 @@ export default () => {
       }}
       columns={columns}
       actionRef={actionRef}
+      formRef={formRef}
       request={async (params) => {
         // if (params.name === '') delete params.name;
         // if (params.path === '') delete params.path;
         // if (params.component === '') delete params.component;
         // 表单搜索项会从 params 传入，传递给后端接口。
-        const data = await dictItemList(params as API.DictItemListParams);
+        const data = await dictItemList(params.typeId ? params as API.DictItemListParams : {
+          ...params,
+          typeId: Number(id)
+        } as API.DictItemListParams);
         return { data: data.items, success: true, total: data.meta?.itemCount };
       }}
       rowKey="id"

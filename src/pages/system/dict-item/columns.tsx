@@ -1,6 +1,7 @@
 import { formatToDate } from '@/utils/dateUtil';
 import { ProColumns } from '@ant-design/pro-components';
 import { Tag } from 'antd';
+import { dictTypeGetAll } from '@/api/backend/api/systemDictType.ts';
 
 export const baseColumns: ProColumns[] = [
   {
@@ -9,6 +10,21 @@ export const baseColumns: ProColumns[] = [
     sorter: true,
     width: 60,
     hideInSearch: true
+  },
+  {
+    title: '字典类型',
+    dataIndex: 'typeId',
+    hideInTable: true,
+    valueType: 'select',
+    request: () => dictTypeGetAll(),
+    fieldProps: {
+      disabled: true,
+      fieldNames: {
+        value: 'id',
+        label: 'name'
+      },
+      showSearch: true,
+    }
   },
   {
     title: '字典项键名',

@@ -1,14 +1,15 @@
 import { Modal } from 'antd';
 import NiceModal, { useModal } from '@ebay/nice-modal-react';
 import {
-  ProForm, ProFormInstance,
-  ProFormRadio,
+  ProForm, ProFormDigit, ProFormInstance,
+  ProFormRadio, ProFormSelect,
   ProFormText, ProFormTextArea
 } from '@ant-design/pro-components';
 import { useRef } from 'react';
+import { dictTypeGetAll } from '@/api/backend/api/systemDictType.ts';
 
 export const DictItemModal =
-  NiceModal.create(({ data, type = 'add'}: { data: any; type: string; }) => {
+  NiceModal.create(({ data, type = 'add' }: { data: any; type: string; }) => {
     const modal = useModal();
     const formRef = useRef<ProFormInstance>();
 
@@ -35,15 +36,36 @@ export const DictItemModal =
           submitter={false}
           layout="horizontal"
         >
-          <ProFormText
+          <ProFormSelect
             rules={[{ required: true }]}
-            name="name"
-            label="字典名称"
+            name="typeId"
+            label="所属字典类型"
+            request={() => dictTypeGetAll()}
+            disabled={data}
+            fieldProps={{
+              fieldNames: {
+                value: 'id',
+                label: 'name'
+              },
+              showSearch: true
+            }}
           />
           <ProFormText
             rules={[{ required: true }]}
-            name="code"
-            label="字典编码"
+            name="label"
+            label="字典项名称"
+          />
+          <ProFormText
+            rules={[{ required: true }]}
+            name="value"
+            label="字典项值"
+          />
+          <ProFormDigit
+            label="排序号"
+            name="orderNo"
+            min={0}
+            max={255}
+            fieldProps={{ precision: 0 }}
           />
           <ProFormRadio.Group
             name="status"
