@@ -1,9 +1,9 @@
 // import type { TableColumn } from '@/components/core/dynamic-table';
 // import { Icon } from '@/components/basic/icon';
-import { formatToDateTime } from '@/utils/dateUtil';
-import { Tag } from 'antd';
-import { ProColumns } from '@ant-design/pro-components';
-import IconPicker from '@/components/basic/Icon';
+import { formatToDateTime } from '@/utils/dateUtil'
+import { Tag } from 'antd'
+import { ProColumns } from '@ant-design/pro-components'
+import IconPicker from '@/components/basic/Icon'
 
 // export type TableListItem = API.MenuItemInfo;
 // export type TableColumnItem = TableColumn<TableListItem>;
@@ -14,15 +14,15 @@ import IconPicker from '@/components/basic/Icon';
 const getMenuType = (type: any) => {
   switch (type) {
     case 0:
-      return <Tag color="warning">目录</Tag>;
+      return <Tag color="warning">目录</Tag>
     case 1:
-      return <Tag color="success">菜单</Tag>;
+      return <Tag color="success">菜单</Tag>
     case 2:
-      return <Tag color="error">权限</Tag>;
+      return <Tag color="error">权限</Tag>
     default:
-      return '';
+      return ''
   }
-};
+}
 
 export const baseColumns: ProColumns[] = [
   {
@@ -58,7 +58,7 @@ export const baseColumns: ProColumns[] = [
     title: '文件路径',
     width: 180,
     dataIndex: 'component',
-    align: 'center',
+    align: 'center'
   },
   {
     title: '权限标识',
@@ -66,8 +66,7 @@ export const baseColumns: ProColumns[] = [
     dataIndex: 'permission',
     align: 'center',
     hideInSearch: true,
-    render: (permission) =>
-      permission && <Tag color="processing">{permission}</Tag>
+    render: (permission) => permission && <Tag color="processing">{permission}</Tag>
   },
   {
     title: '排序',
@@ -82,7 +81,7 @@ export const baseColumns: ProColumns[] = [
     width: 80,
     align: 'center',
     hideInSearch: true,
-    render: (_, record ) => record.type === 1 && (record.keepAlive ? '是' : '否')
+    render: (_, record) => record.type === 1 && (record.keepAlive ? '是' : '否')
   },
   {
     title: '是否显示',
@@ -91,11 +90,11 @@ export const baseColumns: ProColumns[] = [
     align: 'center',
     hideInSearch: true,
     render: (_, record) => {
-      const show = record.show;
-      const enable = ~~show === 1;
-      const color = enable ? 'green' : 'red';
-      const text = enable ? '显示' : '隐藏';
-      return <Tag color={color}>{text}</Tag>;
+      const show = record.show
+      const enable = ~~show === 1
+      const color = enable ? 'green' : 'red'
+      const text = enable ? '显示' : '隐藏'
+      return <Tag color={color}>{text}</Tag>
     }
   },
   {
@@ -105,11 +104,11 @@ export const baseColumns: ProColumns[] = [
     align: 'center',
     hideInSearch: true,
     render: (_, record) => {
-      const status = record.status;
-      const enable = ~~status === 1;
-      const color = enable ? 'green' : 'red';
-      const text = enable ? '启用' : '停用';
-      return <Tag color={color}>{text}</Tag>;
+      const status = record.status
+      const enable = ~~status === 1
+      const color = enable ? 'green' : 'red'
+      const text = enable ? '启用' : '停用'
+      return <Tag color={color}>{text}</Tag>
     }
   },
   {
@@ -119,7 +118,7 @@ export const baseColumns: ProColumns[] = [
     dataIndex: 'updatedAt',
     hideInSearch: true,
     render(text) {
-      return formatToDateTime(text as string);
+      return formatToDateTime(text as string)
     }
   }
-];
+]

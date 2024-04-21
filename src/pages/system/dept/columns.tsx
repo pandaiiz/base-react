@@ -1,5 +1,5 @@
-import { formatToDate } from '@/utils/dateUtil';
-import { ProColumns } from '@ant-design/pro-components';
+import { formatToDateTime } from '@/utils/dateUtil'
+import { ProColumns } from '@ant-design/pro-components'
 
 export const baseColumns: ProColumns[] = [
   {
@@ -9,15 +9,19 @@ export const baseColumns: ProColumns[] = [
   },
   {
     title: '排序',
-    dataIndex: 'orderNo',
-    width: 50,
+    dataIndex: 'sort',
     hideInSearch: true
   },
   {
     title: '创建时间',
     dataIndex: 'createdAt',
-    width: 200,
     hideInSearch: true,
-    render: (_, record) => formatToDate(record.createdAt)
+    render: (_, record) => formatToDateTime(record.createdAt)
+  },
+  {
+    title: '修改时间',
+    dataIndex: 'updatedAt',
+    hideInSearch: true,
+    render: (_, record) => formatToDateTime(record.updatedAt)
   }
-];
+]
