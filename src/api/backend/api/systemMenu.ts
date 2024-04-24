@@ -46,7 +46,7 @@ export async function menuInfo(
   options?: RequestOptions
 ) {
   const { id: param0, ...queryParams } = params
-  return request<any>(`/api/system/menus/${param0}`, {
+  return request<any>(`/system/menus/${param0}`, {
     method: 'GET',
     params: { ...queryParams },
     ...(options || {})
@@ -61,7 +61,7 @@ export async function menuUpdate(
   options?: RequestOptions
 ) {
   const { id: param0, ...queryParams } = params
-  return request<any>(`/api/system/menus/${param0}`, {
+  return request<any>(`/system/menus/${param0}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json'
@@ -79,7 +79,7 @@ export async function menuDelete(
   options?: RequestOptions
 ) {
   const { id: param0, ...queryParams } = params
-  return request<any>(`/api/system/menus/${param0}`, {
+  return request<any>(`/system/menus/${param0}`, {
     method: 'DELETE',
     params: { ...queryParams },
     ...(options || { successMsg: '删除成功' })

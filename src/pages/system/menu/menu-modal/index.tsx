@@ -83,8 +83,8 @@ export const MenuModal = NiceModal.create(({ data, type = 'add' }: { data: any; 
         <ProFormText
           rules={[{ required: true }]}
           name="name"
-          label="权限/节点名称"
-          placeholder="请输入权限名称/节点名称"
+          label="名称"
+          placeholder="请输入名称"
         />
         <ProFormTreeSelect
           rules={[{ required: true }]}
