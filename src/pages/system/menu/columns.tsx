@@ -71,17 +71,9 @@ export const baseColumns: ProColumns[] = [
   {
     title: '排序',
     width: 50,
-    dataIndex: 'orderNo',
+    dataIndex: 'sort',
     align: 'center',
     hideInSearch: true
-  },
-  {
-    title: '路由缓存',
-    dataIndex: 'keepalive',
-    width: 80,
-    align: 'center',
-    hideInSearch: true,
-    render: (_, record) => record.type === 1 && (record.keepAlive ? '是' : '否')
   },
   {
     title: '是否显示',

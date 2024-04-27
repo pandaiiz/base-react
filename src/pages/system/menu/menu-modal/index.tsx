@@ -19,7 +19,7 @@ import { useRef } from 'react'
 const isDir = (type: API.MenuDto['type']) => type === 0
 const isMenu = (type: API.MenuDto['type']) => type === 1
 const isButton = (type: API.MenuDto['type']) => type === 2
-export const MenuModal = NiceModal.create(({ data, type = 'add' }: { data: any; type: string }) => {
+export default NiceModal.create(({ data, type = 'add' }: { data: any; type: string }) => {
   const modal = useModal()
   const formRef = useRef<ProFormInstance>()
   let initialValues: any = { type: 0, show: 1, status: 1, sort: 0 }

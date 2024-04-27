@@ -23,7 +23,7 @@ const BaseRoutes: RouteObject[] = [
   }
 ]
 
-const useRouters = () => {
+export default () => {
   const menus = usePermissionStore((state) => state.menus)
   BaseRoutes[0].children = [
     { index: true, element: lazyLoad(() => import('@/pages/home')) },
@@ -31,4 +31,3 @@ const useRouters = () => {
   ]
   return BaseRoutes
 }
-export default useRouters

@@ -5,10 +5,9 @@ import { menuList } from '@/api/backend/api/systemMenu.ts'
 import { baseColumns } from '@/pages/system/menu/columns.tsx'
 import { useRef, useState } from 'react'
 import { useModal } from '@ebay/nice-modal-react'
-import { MenuModal } from '@/pages/system/menu/menu-modal'
+import MenuModal from '@/pages/system/menu/menu-modal'
 import { ExclamationCircleFilled } from '@ant-design/icons'
 import { Api } from '@/api'
-import { log } from 'console'
 
 export type TableListItem = any
 const { confirm } = Modal

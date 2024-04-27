@@ -48,7 +48,7 @@ export async function roleInfo(
   options?: RequestOptions
 ) {
   const { id: param0, ...queryParams } = params
-  return request<API.RoleInfo>(`/api/system/roles/${param0}`, {
+  return request<API.RoleInfo>(`/system/roles/${param0}`, {
     method: 'GET',
     params: { ...queryParams },
     ...(options || {})
@@ -63,7 +63,7 @@ export async function roleUpdate(
   options?: RequestOptions
 ) {
   const { id: param0, ...queryParams } = params
-  return request<any>(`/api/system/roles/${param0}`, {
+  return request<any>(`/system/roles/${param0}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json'
@@ -81,7 +81,7 @@ export async function roleDelete(
   options?: RequestOptions
 ) {
   const { id: param0, ...queryParams } = params
-  return request<any>(`/api/system/roles/${param0}`, {
+  return request<any>(`/system/roles/${param0}`, {
     method: 'DELETE',
     params: { ...queryParams },
     ...(options || { successMsg: '删除成功' })

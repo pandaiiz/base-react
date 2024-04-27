@@ -1,5 +1,3 @@
-// @ts-ignore
-/* eslint-disable */
 import { request, type RequestOptions } from '@/utils/request'
 
 /** 获取字典项列表 GET /api/system/dict-item */
