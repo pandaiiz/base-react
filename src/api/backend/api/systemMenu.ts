@@ -12,9 +12,9 @@ export async function menuList(
     method: 'GET',
     params: {
       // show has a default value: 1
-      show: '1',
+      show: 1,
       // status has a default value: 1
-      status: '1',
+      status: 1,
       ...params
     },
     ...(options || {})

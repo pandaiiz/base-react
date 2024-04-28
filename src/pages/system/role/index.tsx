@@ -46,12 +46,11 @@ const roleUpdate = async (modal: any, record: any, ref: any) => {
     /* empty */
   }
 }
-
 export default () => {
   const modal = useModal(RoleModal)
 
   const actionRef = useRef<ActionType>()
-  const columns: ProColumns<any>[] = [
+  const columns: ProColumns<API.RoleEntity>[] = [
     ...baseColumns,
     {
       title: '操作',
@@ -74,22 +73,18 @@ export default () => {
   const dataSourceRef = useRef<any>()
 
   return (
-    <ProTable<TableListItem>
+    <ProTable<API.RoleEntity>
+      headerTitle="角色列表"
       onDataSourceChange={(data) => {
         dataSourceRef.current = data
       }}
       columns={columns}
       actionRef={actionRef}
       request={async (params) => {
-        // if (params.name === '') delete params.name;
-        // if (params.path === '') delete params.path;
-        // if (params.component === '') delete params.component;
-        // 表单搜索项会从 params 传入，传递给后端接口。
         const data = await roleList(params as API.RoleListParams)
-        return { data, success: true, total: data.meta?.itemCount }
+        return { data: data.list, success: true, total: data.pagination?.total }
       }}
       rowKey="id"
-      // pagination={false}
       columnEmptyText={false}
       dateFormatter="string"
       scroll={{ y: 800 }}

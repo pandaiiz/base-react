@@ -1,8 +1,7 @@
-import { formatToDate } from '@/utils/dateUtil';
-import { ProColumns } from '@ant-design/pro-components';
-import { Tag } from 'antd';
+import { formatToDate } from '@/utils/dateUtil'
+import { ProColumns } from '@ant-design/pro-components'
 
-export const baseColumns: ProColumns[] = [
+export const baseColumns: ProColumns<API.RoleEntity>[] = [
   {
     align: 'center',
     title: '#',
@@ -27,12 +26,17 @@ export const baseColumns: ProColumns[] = [
     title: '状态',
     dataIndex: 'status',
     width: 80,
-    render: (status) => <Tag color={status === 1 ? 'green' : 'red'}>{status === 1 ? '启用' : '停用'}</Tag>
+    valueType: 'select',
+    valueEnum: {
+      0: { text: '禁用', status: 'Error' },
+      1: { text: '启用', status: 'Success' }
+    }
   },
   {
     align: 'center',
     title: '备注',
-    dataIndex: 'remark'
+    dataIndex: 'remark',
+    hideInSearch: true
   },
   {
     align: 'center',
@@ -40,7 +44,7 @@ export const baseColumns: ProColumns[] = [
     dataIndex: 'createdAt',
     hideInSearch: true,
     render: (_, record) => {
-      return formatToDate(record.createdAt);
+      return formatToDate(record.createdAt)
     }
   },
   {
@@ -49,7 +53,7 @@ export const baseColumns: ProColumns[] = [
     dataIndex: 'updatedAt',
     hideInSearch: true,
     render: (_, record) => {
-      return formatToDate(record.updatedAt);
+      return formatToDate(record.updatedAt)
     }
   }
-];
+]
