@@ -113,8 +113,6 @@ declare namespace API {
   type DeptDto = {
     /** 部门名称 */
     name: string
-    /** 父级部门id */
-    parentId: number
     /** 排序编号 */
     sort?: number
   }
@@ -124,8 +122,6 @@ declare namespace API {
     name: string
     /** 排序 */
     sort: number
-    children: DeptEntity[]
-    parent?: DeptEntity
     id: number
     createdAt: string
     updatedAt: string
@@ -425,7 +421,7 @@ declare namespace API {
 
   type MenuDto = {
     /** 菜单类型 */
-    type: 0 | 1 | 2
+    type: 'CATALOG' | 'MENU' | 'ACCESS'
     /** 父级菜单 */
     parentId: number
     /** 菜单或权限名称 */
@@ -491,7 +487,7 @@ declare namespace API {
 
   type MenuListParams = {
     /** 菜单类型 */
-    type?: 0 | 1 | 2
+    type?: 'CATALOG' | 'MENU' | 'ACCESS'
     /** 父级菜单 */
     parentId?: number
     /** 菜单或权限名称 */
@@ -528,7 +524,7 @@ declare namespace API {
 
   type MenuUpdateDto = {
     /** 菜单类型 */
-    type?: 0 | 1 | 2
+    type?: 'CATALOG' | 'MENU' | 'ACCESS'
     /** 父级菜单 */
     parentId?: number
     /** 菜单或权限名称 */

@@ -1,7 +1,7 @@
 import { formatToDateTime } from '@/utils/dateUtil'
 import { ProColumns } from '@ant-design/pro-components'
 
-export const baseColumns: ProColumns[] = [
+export const baseColumns: ProColumns<API.DeptEntity>[] = [
   {
     title: '部门名称',
     dataIndex: 'name',

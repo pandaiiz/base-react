@@ -9,7 +9,6 @@ import MenuModal from '@/pages/system/menu/menu-modal'
 import { ExclamationCircleFilled } from '@ant-design/icons'
 import { Api } from '@/api'
 
-export type TableListItem = any
 const { confirm } = Modal
 const deleteConfirm = (record: any, ref: any) => {
   confirm({
@@ -22,28 +21,24 @@ const deleteConfirm = (record: any, ref: any) => {
   })
 }
 
-const menuCreateOutRow = async (modal: any, record: any, ref: any) => {
+const menuCreateOutRow = async (modal: any, ref: any) => {
   try {
-    await modal.show({ data: record })
-    console.log(123123)
+    await modal.show()
     modal.remove()
     ref.current?.reload()
   } catch (e) {
     modal.reject(new Error('something went wrong'))
-    console.log(e)
   }
 }
 
 const menuCreate = async (modal: any, record: any, ref: any) => {
-  const values: API.MenuDto = await modal.show({ data: record })
-  await Api.systemMenu.menuCreate(values as API.MenuDto)
+  await modal.show({ data: record })
   modal.remove()
   ref.current?.reload()
 }
 
 const menuUpdate = async (modal: any, record: any, ref: any) => {
-  const values: API.MenuDto = await modal.show({ data: record, type: 'edit' })
-  await Api.systemMenu.menuUpdate({ id: record.id }, values as API.MenuDto)
+  await modal.show({ data: record, type: 'edit' })
   modal.remove()
   ref.current?.reload()
 }
@@ -53,7 +48,7 @@ export default () => {
 
   const [expandKeys, setExpandKeys] = useState<any[]>([])
   const actionRef = useRef<ActionType>()
-  const columns: ProColumns<TableListItem>[] = [
+  const columns: ProColumns<API.MenuEntity>[] = [
     ...baseColumns,
     {
       title: '操作',
@@ -95,7 +90,7 @@ export default () => {
   const dataSourceRef = useRef<any>()
 
   return (
-    <ProTable<TableListItem>
+    <ProTable<API.MenuEntity>
       onDataSourceChange={(data) => {
         dataSourceRef.current = data
       }}
@@ -132,7 +127,7 @@ export default () => {
         >
           折叠全部
         </Button>,
-        <Button type="primary" key="primary" onClick={() => menuCreateOutRow(modal, {}, actionRef)}>
+        <Button type="primary" key="primary" onClick={() => menuCreateOutRow(modal, actionRef)}>
           新增
         </Button>
       ]}

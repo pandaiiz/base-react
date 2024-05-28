@@ -26,11 +26,7 @@ export const RoleModal = NiceModal.create(
         onCancel={modal.remove}
         maskClosable={false}
       >
-        <ProForm<{
-          name: string
-          company?: string
-          useMode?: string
-        }>
+        <ProForm<API.RoleEntity>
           formRef={formRef}
           initialValues={data || { status: 1 }}
           labelCol={{ span: 6 }}

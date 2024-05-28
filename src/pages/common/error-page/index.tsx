@@ -6,7 +6,6 @@ const ErrorPage = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   useEffect(() => {
-    console.log(123123);
     navigate(pathname);
     setNotFound(true);
   }, [navigate, pathname]);

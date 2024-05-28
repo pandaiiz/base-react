@@ -18,11 +18,7 @@ export const DeptModal = NiceModal.create(({ data, type = 'add' }: { data: any; 
       onCancel={modal.remove}
       maskClosable={false}
     >
-      <ProForm<{
-        name: string
-        company?: string
-        useMode?: string
-      }>
+      <ProForm<API.DeptEntity>
         formRef={formRef}
         initialValues={data}
         labelCol={{ span: 6 }}

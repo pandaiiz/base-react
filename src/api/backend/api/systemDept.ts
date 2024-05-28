@@ -1,5 +1,3 @@
-// @ts-ignore
-/* eslint-disable */
 import { request, type RequestOptions } from '@/utils/request'
 
 /** 获取部门列表 GET /api/system/depts */

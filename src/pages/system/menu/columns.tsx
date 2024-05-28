@@ -13,18 +13,18 @@ import IconPicker from '@/components/basic/Icon'
  */
 const getMenuType = (type: any) => {
   switch (type) {
-    case 0:
+    case "CATALOG":
       return <Tag color="warning">目录</Tag>
-    case 1:
+    case "MENU":
       return <Tag color="success">菜单</Tag>
-    case 2:
+    case "ACCESS":
       return <Tag color="error">权限</Tag>
     default:
       return ''
   }
 }
 
-export const baseColumns: ProColumns[] = [
+export const baseColumns: ProColumns<API.MenuEntity>[] = [
   {
     title: '名称',
     dataIndex: 'name',

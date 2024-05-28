@@ -15,10 +15,10 @@ import { asyncRoutes } from '@/routers/asyncModules'
 import { Api } from '@/api'
 import { useRef } from 'react'
 
-/** 菜单类型 0: 目录 | 1: 菜单 | 2: 按钮 */
-const isDir = (type: API.MenuDto['type']) => type === 0
-const isMenu = (type: API.MenuDto['type']) => type === 1
-const isButton = (type: API.MenuDto['type']) => type === 2
+/** 菜单类型 0: 目录 | 1: 菜单 | 2: 按钮权限 */
+// const isDir = (type: API.MenuDto['type']) => type === "CATALOG"
+const isMenu = (type: API.MenuDto['type']) => type === "MENU"
+const isButton = (type: API.MenuDto['type']) => type === "ACCESS"
 export default NiceModal.create(({ data, type = 'add' }: { data: any; type: string }) => {
   const modal = useModal()
   const formRef = useRef<ProFormInstance>()
@@ -40,7 +40,6 @@ export default NiceModal.create(({ data, type = 'add' }: { data: any; type: stri
         const formData = await formRef.current?.validateFields?.()
         const values = {
           ...formData,
-          isExt: false,
           parentId: formData.parentId === -1 ? undefined : formData.parentId
         }
 
@@ -58,11 +57,7 @@ export default NiceModal.create(({ data, type = 'add' }: { data: any; type: stri
       onCancel={modal.remove}
       maskClosable={false}
     >
-      <ProForm<{
-        name: string
-        company?: string
-        useMode?: string
-      }>
+      <ProForm<API.MenuEntity>
         formRef={formRef}
         initialValues={initialValues}
         labelCol={{ span: 6 }}
@@ -75,9 +70,9 @@ export default NiceModal.create(({ data, type = 'add' }: { data: any; type: stri
           label="菜单类型"
           rules={[{ required: true }]}
           options={[
-            { label: '目录', value: 0 },
-            { label: '菜单', value: 1 },
-            { label: '权限', value: 2 }
+            { label: '目录', value: 'CATALOG' },
+            { label: '菜单', value: 'MENU' },
+            { label: '权限', value: 'ACCESS' }
           ]}
         />
         <ProFormText
@@ -109,7 +104,7 @@ export default NiceModal.create(({ data, type = 'add' }: { data: any; type: stri
         <ProFormDependency name={['type']}>
           {({ type }) => (
             <>
-              {!isDir(type) && (
+              {isButton(type) && (
                 <ProFormText
                   name="permission"
                   label="权限"
@@ -128,7 +123,11 @@ export default NiceModal.create(({ data, type = 'add' }: { data: any; type: stri
                     options: Object.keys(asyncRoutes).reduce(
                       (prev, curr) => (str2tree(curr, prev, '/'), prev),
                       []
-                    )
+                    ),
+                    onChange: (_: any, selectOptions: string | any[]) => {
+                      const path = selectOptions[selectOptions.length - 1].path.replace(/:/g, '/')
+                      formRef.current?.setFieldsValue({ component: path })
+                    }
                   }}
                 />
               )}

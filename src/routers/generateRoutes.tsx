@@ -1,4 +1,3 @@
-// 读取所有的页面
 import lazyLoad from '@/utils/lazyLoad.tsx'
 import { Navigate } from 'react-router-dom'
 
@@ -10,19 +9,6 @@ const components = Object.keys(modules).reduce<Record<string, any>>((prev, cur) 
   prev[cur.replace('./pages', '').replace('/index.tsx', '')] = modules[cur]
   return prev
 }, {}) as any
-/* export const generateRoutes = (routes: any) => {
-  return routes.map((route: any) => {
-    const { path, component, children, meta } = route
-    console.log('🚀 ~ returnroutes.map ~ meta:', meta.type)
-    const filePath = component && `./${component.replace('/index', '')}`
-    return {
-      path,
-      element: components[filePath] && lazyLoad(components[filePath]),
-      children: children && generateRoutes(children)
-    }
-  })
-} */
-
 export const generateRoutes = (routes: any) => {
   const list: any[] = []
   routes.forEach((route: any) => {
@@ -31,7 +17,7 @@ export const generateRoutes = (routes: any) => {
     // 目录，添加重定向到第一个子菜单
     if (meta.type === 0) {
       list.push(
-        { path, element: <Navigate to="/system/user" /> },
+        { path, element: <Navigate to={children && children[0].path} /> },
         {
           path,
           element: components[filePath] && lazyLoad(components[filePath]),
@@ -46,6 +32,5 @@ export const generateRoutes = (routes: any) => {
       })
     }
   })
-
   return list
 }

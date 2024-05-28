@@ -7,15 +7,13 @@ export async function userList(
   options?: RequestOptions
 ) {
   return request<{
-    items?: API.UserEntity[]
-    meta?: {
-      itemCount?: number
-      totalItems?: number
-      itemsPerPage?: number
-      totalPages?: number
+    list?: API.UserEntity[]
+    pagination?: {
+      total?: number
       currentPage?: number
+      pageSize?: number
     }
-  }>('/api/system/users', {
+  }>('/system/users', {
     method: 'GET',
     params: {
       // page has a default value: 1
@@ -31,7 +29,7 @@ export async function userList(
 
 /** 新增用户 POST /api/system/users */
 export async function userCreate(body: API.UserDto, options?: RequestOptions) {
-  return request<any>('/api/system/users', {
+  return request<any>('/system/users', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -48,7 +46,7 @@ export async function userRead(
   options?: RequestOptions
 ) {
   const { id: param0, ...queryParams } = params
-  return request<API.UserEntity>(`/api/system/users/${param0}`, {
+  return request<API.UserEntity>(`/system/users/${param0}`, {
     method: 'GET',
     params: { ...queryParams },
     ...(options || {})
@@ -63,7 +61,7 @@ export async function userUpdate(
   options?: RequestOptions
 ) {
   const { id: param0, ...queryParams } = params
-  return request<any>(`/api/system/users/${param0}`, {
+  return request<any>(`/system/users/${param0}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json'
@@ -81,7 +79,7 @@ export async function userDelete(
   options?: RequestOptions
 ) {
   const { id: param0, ...queryParams } = params
-  return request<any>(`/api/system/users/${param0}`, {
+  return request<any>(`/system/users/${param0}`, {
     method: 'DELETE',
     params: { ...queryParams },
     ...(options || { successMsg: '删除成功' })
@@ -96,7 +94,7 @@ export async function userPassword(
   options?: RequestOptions
 ) {
   const { id: param0, ...queryParams } = params
-  return request<any>(`/api/system/users/${param0}/password`, {
+  return request<any>(`/system/users/${param0}/password`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
