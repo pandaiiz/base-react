@@ -22,27 +22,15 @@ const deleteConfirm = (record: any, ref: any) => {
   })
 }
 const dictTypeCreate = async (modal: any, ref: any) => {
-  // const treeData = await Api.systemMenu.menuList({});
-  const values: API.DictTypeDto = await modal.show()
-
-  try {
-    await Api.systemDictType.dictTypeCreate(values as API.DictTypeDto)
-    modal.remove()
-    ref.current?.reload()
-  } catch (e) {
-    /* empty */
-  }
+  await modal.show()
+  modal.remove()
+  ref.current?.reload()
 }
 
 const dictTypeUpdate = async (modal: any, record: any, ref: any) => {
-  const values: API.DictTypeDto = await modal.show({ data: record, type: 'edit' })
-  try {
-    await Api.systemDictType.dictTypeUpdate({ id: record.id }, values as API.DictTypeDto)
-    modal.remove()
-    ref.current?.reload()
-  } catch (e) {
-    /* empty */
-  }
+  await modal.show({ data: record, type: 'edit' })
+  modal.remove()
+  ref.current?.reload()
 }
 
 export default () => {
@@ -78,16 +66,14 @@ export default () => {
       }}
       columns={columns}
       actionRef={actionRef}
-      request={async (params) => {
-        // if (params.name === '') delete params.name;
-        // if (params.path === '') delete params.path;
-        // if (params.component === '') delete params.component;
-        // 表单搜索项会从 params 传入，传递给后端接口。
-        const data = await dictTypeList(params as API.DictTypeListParams)
-        return { data: data.items, success: true, total: data.meta?.itemCount }
-      }}
+      request={(params) => dictTypeList(params as API.DictTypeListParams)}
       rowKey="id"
-      // pagination={false}
+      pagination={{
+        defaultPageSize: 10,
+        showSizeChanger: true,
+        pageSizeOptions: ['10', '20', '50', '100'],
+        showQuickJumper: true
+      }}
       columnEmptyText={false}
       dateFormatter="string"
       scroll={{ y: 800 }}

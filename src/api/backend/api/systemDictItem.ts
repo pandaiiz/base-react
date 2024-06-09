@@ -1,6 +1,6 @@
 import { request, type RequestOptions } from '@/utils/request'
 
-/** 获取字典项列表 GET /api/system/dict-item */
+/** 获取字典项列表 GET /system/dict-item */
 export async function dictItemList(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: API.DictItemListParams,
@@ -17,19 +17,12 @@ export async function dictItemList(
     }
   }>('/system/dict-item', {
     method: 'GET',
-    params: {
-      // page has a default value: 1
-      page: '1',
-      // pageSize has a default value: 10
-      pageSize: '10',
-
-      ...params
-    },
+    params,
     ...(options || {})
   })
 }
 
-/** 新增字典项 POST /api/system/dict-item */
+/** 新增字典项 POST /system/dict-item */
 export async function dictItemCreate(body: API.DictItemDto, options?: RequestOptions) {
   return request<any>('/system/dict-item', {
     method: 'POST',
@@ -41,21 +34,21 @@ export async function dictItemCreate(body: API.DictItemDto, options?: RequestOpt
   })
 }
 
-/** 查询字典项信息 GET /api/system/dict-item/${param0} */
+/** 查询字典项信息 GET /system/dict-item/${param0} */
 export async function dictItemInfo(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: API.DictItemInfoParams,
   options?: RequestOptions
 ) {
   const { id: param0, ...queryParams } = params
-  return request<API.DictItemEntity>(`/api/system/dict-item/${param0}`, {
+  return request<API.DictItemEntity>(`/system/dict-item/${param0}`, {
     method: 'GET',
     params: { ...queryParams },
     ...(options || {})
   })
 }
 
-/** 更新字典项 POST /api/system/dict-item/${param0} */
+/** 更新字典项 POST /system/dict-item/${param0} */
 export async function dictItemUpdate(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: API.DictItemUpdateParams,
@@ -63,7 +56,7 @@ export async function dictItemUpdate(
   options?: RequestOptions
 ) {
   const { id: param0, ...queryParams } = params
-  return request<any>(`/api/system/dict-item/${param0}`, {
+  return request<any>(`/system/dict-item/${param0}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -74,14 +67,14 @@ export async function dictItemUpdate(
   })
 }
 
-/** 删除指定的字典项 DELETE /api/system/dict-item/${param0} */
+/** 删除指定的字典项 DELETE /system/dict-item/${param0} */
 export async function dictItemDelete(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: API.DictItemDeleteParams,
   options?: RequestOptions
 ) {
   const { id: param0, ...queryParams } = params
-  return request<any>(`/api/system/dict-item/${param0}`, {
+  return request<any>(`/system/dict-item/${param0}`, {
     method: 'DELETE',
     params: { ...queryParams },
     ...(options || { successMsg: '删除成功' })

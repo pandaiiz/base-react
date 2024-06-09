@@ -1,33 +1,44 @@
-import { Modal } from 'antd';
-import NiceModal, { useModal } from '@ebay/nice-modal-react';
+import { Modal } from 'antd'
+import NiceModal, { useModal } from '@ebay/nice-modal-react'
 import {
-  ProForm, ProFormDigit, ProFormInstance,
-  ProFormRadio, ProFormSelect,
-  ProFormText, ProFormTextArea
-} from '@ant-design/pro-components';
-import { useRef } from 'react';
-import { dictTypeGetAll } from '@/api/backend/api/systemDictType.ts';
+  ProForm,
+  ProFormDigit,
+  ProFormInstance,
+  ProFormRadio,
+  ProFormSelect,
+  ProFormText,
+  ProFormTextArea
+} from '@ant-design/pro-components'
+import { useRef } from 'react'
+import { dictTypeGetAll } from '@/api/backend/api/systemDictType.ts'
+import { Api } from '@/api'
 
-export const DictItemModal =
-  NiceModal.create(({ data, type = 'add' }: { data: any; type: string; }) => {
-    const modal = useModal();
-    const formRef = useRef<ProFormInstance>();
-
+export const DictItemModal = NiceModal.create(
+  ({ data, type = 'add' }: { data: any; type: string }) => {
+    const modal = useModal()
+    console.log(data)
+    const formRef = useRef<ProFormInstance>()
+    const onOK = async () => {
+      const values = await formRef.current?.validateFields?.()
+      if (type === 'add') {
+        await Api.systemDictItem.dictItemCreate(values as API.DictItemDto)
+      } else {
+        await Api.systemDictItem.dictItemUpdate({ id: data.id }, values as API.DictItemDto)
+      }
+      modal.resolve(values)
+    }
     return (
       <Modal
         title={type === 'add' ? '新增' : '编辑'}
         open={modal.visible}
-        onOk={async () => {
-          const values = await formRef.current?.validateFields?.();
-          modal.resolve(values);
-        }}
+        onOk={onOK}
         onCancel={modal.remove}
         maskClosable={false}
       >
         <ProForm<{
-          name: string;
-          company?: string;
-          useMode?: string;
+          name: string
+          company?: string
+          useMode?: string
         }>
           formRef={formRef}
           initialValues={data || { status: 1 }}
@@ -50,19 +61,11 @@ export const DictItemModal =
               showSearch: true
             }}
           />
-          <ProFormText
-            rules={[{ required: true }]}
-            name="label"
-            label="字典项名称"
-          />
-          <ProFormText
-            rules={[{ required: true }]}
-            name="value"
-            label="字典项值"
-          />
+          <ProFormText rules={[{ required: true }]} name="label" label="字典项名称" />
+          <ProFormText rules={[{ required: true }]} name="value" label="字典项值" />
           <ProFormDigit
             label="排序号"
-            name="orderNo"
+            name="sort"
             min={0}
             max={255}
             fieldProps={{ precision: 0 }}
@@ -75,11 +78,9 @@ export const DictItemModal =
               { label: '禁用', value: 0 }
             ]}
           />
-          <ProFormTextArea
-            name="remark"
-            label="备注"
-          />
+          <ProFormTextArea name="remark" label="备注" />
         </ProForm>
       </Modal>
-    );
-  });
+    )
+  }
+)

@@ -1,10 +1,7 @@
-// @ts-ignore
-/* eslint-disable */
 import { request, type RequestOptions } from '@/utils/request'
 
 /** 获取字典类型列表 GET /api/system/dict-type */
 export async function dictTypeList(
-  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: API.DictTypeListParams,
   options?: RequestOptions
 ) {
@@ -19,14 +16,7 @@ export async function dictTypeList(
     }
   }>('/system/dict-type', {
     method: 'GET',
-    params: {
-      // page has a default value: 1
-      page: '1',
-      // pageSize has a default value: 10
-      pageSize: '10',
-
-      ...params
-    },
+    params,
     ...(options || {})
   })
 }
@@ -49,8 +39,8 @@ export async function dictTypeInfo(
   params: API.DictTypeInfoParams,
   options?: RequestOptions
 ) {
-  const { id: param0, ...queryParams } = params
-  return request<API.DictTypeEntity>(`/api/system/dict-type/${param0}`, {
+  const { id, ...queryParams } = params
+  return request<API.DictTypeEntity>(`/system/dict-type/${id}`, {
     method: 'GET',
     params: { ...queryParams },
     ...(options || {})
@@ -64,8 +54,8 @@ export async function dictTypeUpdate(
   body: API.DictTypeDto,
   options?: RequestOptions
 ) {
-  const { id: param0, ...queryParams } = params
-  return request<any>(`/api/system/dict-type/${param0}`, {
+  const { id, ...queryParams } = params
+  return request<any>(`/system/dict-type/${id}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -82,8 +72,8 @@ export async function dictTypeDelete(
   params: API.DictTypeDeleteParams,
   options?: RequestOptions
 ) {
-  const { id: param0, ...queryParams } = params
-  return request<any>(`/api/system/dict-type/${param0}`, {
+  const { id, ...queryParams } = params
+  return request<any>(`/system/dict-type/${id}`, {
     method: 'DELETE',
     params: { ...queryParams },
     ...(options || { successMsg: '删除成功' })

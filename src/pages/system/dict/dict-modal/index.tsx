@@ -6,20 +6,27 @@ import {
   ProFormText, ProFormTextArea
 } from '@ant-design/pro-components';
 import { useRef } from 'react';
+import { Api } from '@/api'
 
 export const DictTypeModal =
   NiceModal.create(({ data, type = 'add'}: { data: any; type: string; }) => {
     const modal = useModal();
     const formRef = useRef<ProFormInstance>();
 
+    const onOk = async () => {
+      const values = await formRef.current?.validateFields?.();
+      if (type === 'add') {
+        await Api.systemDictType.dictTypeCreate(values as API.DictTypeDto)
+      } else {
+        await Api.systemDictType.dictTypeUpdate({ id: data.id }, values as API.DictTypeDto)
+      }
+      modal.resolve(values);
+    };
     return (
       <Modal
         title={type === 'add' ? '新增' : '编辑'}
         open={modal.visible}
-        onOk={async () => {
-          const values = await formRef.current?.validateFields?.();
-          modal.resolve(values);
-        }}
+        onOk={onOk}
         onCancel={modal.remove}
         maskClosable={false}
       >
