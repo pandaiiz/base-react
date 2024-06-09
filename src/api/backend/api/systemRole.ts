@@ -6,23 +6,9 @@ export async function roleList(
   params: API.RoleListParams,
   options?: RequestOptions
 ) {
-  return request<{
-    list?: API.RoleEntity[]
-    pagination?: {
-      total?: number
-      currentPage?: number
-      pageSize?: number
-    }
-  }>('/system/roles', {
+  return request<API.RoleEntity[]>('/system/roles', {
     method: 'GET',
-    params: {
-      // page has a default value: 1
-      page: 1,
-      // pageSize has a default value: 10
-      pageSize: 10,
-
-      ...params
-    },
+    params,
     ...(options || {})
   })
 }

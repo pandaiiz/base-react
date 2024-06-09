@@ -134,6 +134,7 @@ declare namespace API {
   type DeptListParams = {
     /** 部门名称 */
     name?: string
+    pageSize?: number
   }
 
   type DeptUpdateParams = {
@@ -230,6 +231,23 @@ declare namespace API {
     updatedAt?: string
   }
 
+  type DictTypeDto = {
+    /** 类型名称 */
+    name?: string
+    /** 类型code */
+    code?: string
+    id?: number
+    createdAt?: string
+    updatedAt?: string
+  }
+
+  type SupplierEntity = {
+    name: string
+    code: string
+    id: number
+    createdAt: string
+    updatedAt: string
+  }
   type DictTypeEntity = {
     /** 创建者 */
     creator: string
@@ -262,6 +280,14 @@ declare namespace API {
     /** 字典类型code */
     code: string
     _t?: number
+  }
+  type SupplierListParams = {
+    current?: number
+    pageSize?: number
+    /** 字典类型名称 */
+    name: string
+    /** 字典类型code */
+    code: string
   }
 
   type DictTypeUpdateParams = {

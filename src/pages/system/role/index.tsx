@@ -80,10 +80,7 @@ export default () => {
       }}
       columns={columns}
       actionRef={actionRef}
-      request={async (params) => {
-        const data = await roleList(params as API.RoleListParams)
-        return { data: data.list, success: true, total: data.pagination?.total }
-      }}
+      request={(params) => roleList(params as API.RoleListParams)}
       rowKey="id"
       columnEmptyText={false}
       dateFormatter="string"

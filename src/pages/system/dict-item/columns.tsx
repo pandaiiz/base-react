@@ -7,7 +7,6 @@ export const baseColumns: ProColumns[] = [
   {
     title: 'ID',
     dataIndex: 'id',
-    sorter: true,
     width: 60,
     hideInSearch: true
   },
@@ -37,6 +36,7 @@ export const baseColumns: ProColumns[] = [
   {
     title: '排序',
     dataIndex: 'sort',
+    sorter: true,
     hideInSearch: true
   },
   {

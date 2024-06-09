@@ -23,11 +23,9 @@ const deleteConfirm = (record: any, ref: any) => {
 const userCreate = async (modal: any, ref: any) => {
   const treeData = await Api.systemMenu.menuList({})
   const values: API.UserDto = await modal.show({ treeData })
-
   try {
     await Api.systemUser.userCreate(values as API.UserDto)
     modal.remove()
-    console.log(123)
     ref.current?.reload()
   } catch (e) {
     /* empty */

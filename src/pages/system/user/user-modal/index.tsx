@@ -43,7 +43,7 @@ export default NiceModal.create(
             rules={[{ required: true }]}
             name="deptId"
             label="所属部门"
-            request={() => deptList({})}
+            request={() => deptList({ pageSize: -1 })}
             disabled={data}
             fieldProps={{
               fieldNames: {
@@ -57,10 +57,7 @@ export default NiceModal.create(
             rules={[{ required: true, type: 'array', min: 1, message: '请选择所属角色' }]}
             name="roleIds"
             label="所属角色"
-            request={async () => {
-              const { list } = await roleList({})
-              return list || []
-            }}
+            request={() => roleList({ pageSize: -1 })}
             disabled={data}
             fieldProps={{
               mode: 'multiple',

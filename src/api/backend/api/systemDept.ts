@@ -8,9 +8,7 @@ export async function deptList(
 ) {
   return request<API.DeptEntity[]>('/system/depts', {
     method: 'GET',
-    params: {
-      ...params
-    },
+    params,
     ...(options || {})
   })
 }
