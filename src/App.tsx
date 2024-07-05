@@ -1,10 +1,10 @@
-import './App.css';
-import { ConfigProvider } from 'antd';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import useRouters from '@/routers';
+import './App.css'
+import { ConfigProvider } from 'antd'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import useRouters from '@/routers'
 
 function App() {
-  const routers = useRouters();
+  const routers = useRouters()
   return (
     <ConfigProvider
       theme={
@@ -18,7 +18,7 @@ function App() {
     >
       <RouterProvider router={createBrowserRouter(routers)} />
     </ConfigProvider>
-  );
+  )
 }
 
-export default App;
+export default App

@@ -1,9 +1,25 @@
-// @ts-ignore
-/* eslint-disable */
 import { request, type RequestOptions } from '@/utils/request'
 
 /** 获取所有菜单列表 GET /api/system/menus */
 export async function menuList(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.MenuListParams,
+  options?: RequestOptions
+) {
+  return request<API.MenuItemInfo[]>('/system/menus/list', {
+    method: 'GET',
+    params: {
+      // show has a default value: 1
+      show: 1,
+      // status has a default value: 1
+      status: 1,
+      ...params
+    },
+    ...(options || {})
+  })
+}
+/** 获取所有菜单列表 GET /api/system/menus */
+export async function menuPageList(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: API.MenuListParams,
   options?: RequestOptions

@@ -3,25 +3,22 @@ import { PageContainer, ProConfigProvider, ProLayout } from '@ant-design/pro-com
 import { ConfigProvider, Dropdown } from 'antd'
 import { Suspense, useEffect } from 'react'
 import { defaultSetting } from '@/config/default-setting.ts'
-import { usePermissionStore, useTokenStore } from '@/stores/user.store.ts'
+import { usePermissionStore, useTokenStore, useUserStore } from '@/stores/user.store.ts'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 
-export default () => {
+const Layout = () => {
   const { menus, getPermissions } = usePermissionStore((state) => ({
     menus: state.menus,
     getPermissions: state.getPermissions
   }))
-
-  useEffect(() => {
-    getPermissions()
-  }, [getPermissions])
-
   const logout = useTokenStore((state) => () => state.logout())
+  const userInfo = useUserStore((state) => state.userInfo)
   const navigate = useNavigate()
   const { pathname } = useLocation()
-  if (typeof document === 'undefined') {
-    return <div />
-  }
+  useEffect(() => {
+    if (menus.length === 0) getPermissions()
+  }, [getPermissions, menus.length])
+
   return (
     menus &&
     menus.length > 0 && (
@@ -58,7 +55,7 @@ export default () => {
                 avatarProps={{
                   src: 'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg',
                   size: 'small',
-                  title: '帅气许哥哥',
+                  title: userInfo?.nickname,
                   render: (_props, dom) => {
                     return (
                       <Dropdown
@@ -85,7 +82,6 @@ export default () => {
                       {title}
                     </a>
                   )
-                  if (typeof window === 'undefined') return defaultDom
                   if (document.body.clientWidth < 1400) {
                     return defaultDom
                   }
@@ -112,3 +108,5 @@ export default () => {
     )
   )
 }
+
+export default Layout

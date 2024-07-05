@@ -8,21 +8,29 @@ import {
   ProFormTextArea
 } from '@ant-design/pro-components'
 import { useRef } from 'react'
+import { Api } from '@/api'
 
-export const RoleModal = NiceModal.create(
+const RoleModal = NiceModal.create(
   ({ data, type = 'add', treeData = [] }: { data: any; type: string; treeData: any[] }) => {
     const treeCheckedKeys = data?.menuIds || []
     const modal = useModal()
     const formRef = useRef<ProFormInstance>()
 
+    const onOk = async () => {
+      const values = await formRef.current?.validateFields?.()
+      if (type === 'add') {
+        await Api.systemRole.roleCreate(values)
+      } else {
+        await Api.systemRole.roleUpdate({ id: data.id }, values)
+      }
+      modal.resolve(values)
+    }
+
     return (
       <Modal
         title={type === 'add' ? '新增' : '编辑'}
         open={modal.visible}
-        onOk={async () => {
-          const values = await formRef.current?.validateFields?.()
-          modal.resolve(values)
-        }}
+        onOk={onOk}
         onCancel={modal.remove}
         maskClosable={false}
       >
@@ -49,8 +57,10 @@ export const RoleModal = NiceModal.create(
             <Card style={{ maxHeight: 200, overflowY: 'auto', padding: 0 }}>
               <Tree
                 checkable
-                onCheck={(checkedKeys) => {
-                  formRef.current?.setFieldValue('menuIds', checkedKeys)
+                checkStrictly
+                defaultExpandAll
+                onCheck={(checkedKeys: any) => {
+                  formRef.current?.setFieldValue('menuIds', checkedKeys?.checked)
                 }}
                 defaultCheckedKeys={treeCheckedKeys}
                 fieldNames={{ title: 'name', key: 'id' }}
@@ -63,3 +73,4 @@ export const RoleModal = NiceModal.create(
     )
   }
 )
+export default RoleModal

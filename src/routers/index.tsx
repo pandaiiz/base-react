@@ -1,4 +1,3 @@
-// 这个主要是路由表组件的写法
 import { RouteObject } from 'react-router-dom'
 import Layout from '@/pages/common/layout'
 import Login from '@/pages/common/login'

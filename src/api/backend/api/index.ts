@@ -24,6 +24,8 @@ import * as netDiskManage from './netDiskManage'
 import * as netDiskOverview from './netDiskOverview'
 import * as businessTodo from './businessTodo'
 import * as relationshipSupplier from './relationshipSupplier'
+import * as relationshipCustomer from './relationshipCustomer'
+import * as relationshipEmployee from './relationshipEmployee'
 export default {
   auth,
   account,
@@ -48,5 +50,7 @@ export default {
   netDiskManage,
   netDiskOverview,
   businessTodo,
-  relationshipSupplier
+  relationshipSupplier,
+  relationshipCustomer,
+  relationshipEmployee
 }

@@ -1,24 +1,22 @@
 import { ActionType, ProColumns, ProFormInstance } from '@ant-design/pro-components'
 import { ProTable } from '@ant-design/pro-components'
-import { Button } from 'antd'
+import { Button, Popconfirm } from 'antd'
 import { baseColumns } from '@/pages/system/dict-item/columns.tsx'
 import { useEffect, useRef } from 'react'
 import { useModal } from '@ebay/nice-modal-react'
 import { Api } from '@/api'
-import deleteConfirm from '@/components/common/DeleteConfirm'
-import { DictItemModal } from '@/pages/system/dict-item/dict-item-modal'
+import DictItemModal from '@/pages/system/dict-item/dict-item-modal'
 import { dictItemList } from '@/api/backend/api/systemDictItem.ts'
 import { useParams } from 'react-router-dom'
+import DictItemEntity = API.DictItemEntity
 
-export type TableListItem = any
-
-const createOrUpdate = async (modal: any, ref: any, record?: any, type: string = 'add') => {
-  await modal.show({ data: record, type })
+const createOrUpdate = async (modal: any, ref: any, data?: any, type: string = 'add') => {
+  await modal.show({ data, type })
   modal.remove()
   ref.current?.reload()
 }
 
-export default () => {
+const DictItemIndex = () => {
   const modal = useModal(DictItemModal)
   const { id } = useParams()
   const actionRef = useRef<ActionType>()
@@ -30,7 +28,7 @@ export default () => {
     }
   }, [formRef, id])
 
-  const columns: ProColumns<TableListItem>[] = [
+  const columns: ProColumns<DictItemEntity>[] = [
     ...baseColumns,
     {
       title: '操作',
@@ -49,24 +47,24 @@ export default () => {
         >
           编辑
         </Button>,
-        <Button
-          type="link"
+        <Popconfirm
           key="delete"
-          onClick={() => deleteConfirm(Api.systemDictItem.dictItemDelete, record, actionRef)}
+          title="确认删除吗？"
+          onConfirm={async () => {
+            await Api.systemDictItem.dictItemDelete({ id: record.id })
+            actionRef?.current?.reload()
+          }}
         >
-          删除
-        </Button>
+          <Button type="link" danger>
+            删除
+          </Button>
+        </Popconfirm>
       ]
     }
   ]
 
-  const dataSourceRef = useRef<any>()
-
   return (
-    <ProTable<TableListItem>
-      onDataSourceChange={(data) => {
-        dataSourceRef.current = data
-      }}
+    <ProTable<DictItemEntity>
       columns={columns}
       actionRef={actionRef}
       formRef={formRef}
@@ -81,7 +79,6 @@ export default () => {
         )
       }
       rowKey="id"
-      // pagination={false}
       columnEmptyText={false}
       dateFormatter="string"
       scroll={{ y: 800 }}
@@ -97,3 +94,4 @@ export default () => {
     />
   )
 }
+export default DictItemIndex

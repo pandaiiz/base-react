@@ -248,6 +248,20 @@ declare namespace API {
     createdAt: string
     updatedAt: string
   }
+  type CustomerEntity = {
+    name: string
+    code: string
+    id: number
+    createdAt: string
+    updatedAt: string
+  }
+  type EmployeeEntity = {
+    name: string
+    code: string
+    id: number
+    createdAt: string
+    updatedAt: string
+  }
   type DictTypeEntity = {
     /** 创建者 */
     creator: string
@@ -282,6 +296,22 @@ declare namespace API {
     _t?: number
   }
   type SupplierListParams = {
+    current?: number
+    pageSize?: number
+    /** 字典类型名称 */
+    name: string
+    /** 字典类型code */
+    code: string
+  }
+  type CustomerListParams = {
+    current?: number
+    pageSize?: number
+    /** 字典类型名称 */
+    name: string
+    /** 字典类型code */
+    code: string
+  }
+  type EmployeeListParams = {
     current?: number
     pageSize?: number
     /** 字典类型名称 */

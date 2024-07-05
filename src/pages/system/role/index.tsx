@@ -1,55 +1,29 @@
 import { ActionType, ProColumns } from '@ant-design/pro-components'
 import { ProTable } from '@ant-design/pro-components'
-import { Button, Modal } from 'antd'
+import { Button, Popconfirm } from 'antd'
 import { baseColumns } from '@/pages/system/role/columns.tsx'
 import { useRef } from 'react'
 import { useModal } from '@ebay/nice-modal-react'
-import { RoleModal } from '@/pages/system/role/role-modal'
-import { ExclamationCircleFilled } from '@ant-design/icons'
+import RoleModal from '@/pages/system/role/role-modal'
 import { Api } from '@/api'
 import { roleList } from '@/api/backend/api/systemRole.ts'
 
-const { confirm } = Modal
-const deleteConfirm = (record: any, ref: any) => {
-  confirm({
-    title: '确认删除吗？',
-    icon: <ExclamationCircleFilled />,
-    content: '删除后不可恢复！',
-    onOk() {
-      Api.systemRole.roleDelete({ id: record.id }).then(() => ref.current.reload())
-    }
-  })
-}
-const roleCreate = async (modal: any, ref: any) => {
+const roleCreateOrUpdate = async (modal: any, ref: any, record?: any) => {
   const treeData = await Api.systemMenu.menuList({})
-  const values: API.RoleDto = await modal.show({ treeData })
-
-  try {
-    await Api.systemRole.roleCreate(values as API.RoleDto)
-    modal.remove()
-    console.log(123)
-    ref.current?.reload()
-  } catch (e) {
-    /* empty */
+  if (record) {
+    const data = await Api.systemRole.roleInfo({ id: record.id })
+    await modal.show({ data, treeData, type: 'edit' })
+  } else {
+    await modal.show({ treeData })
   }
+  modal.remove()
+  ref.current?.reload()
 }
 
-const roleUpdate = async (modal: any, record: any, ref: any) => {
-  const treeData = await Api.systemMenu.menuList({})
-  const data = await Api.systemRole.roleInfo({ id: record.id })
-  const values: API.RoleDto = await modal.show({ data, treeData, type: 'edit' })
-  try {
-    await Api.systemRole.roleUpdate({ id: record.id }, values as API.RoleDto)
-    modal.remove()
-    ref.current?.reload()
-  } catch (e) {
-    /* empty */
-  }
-}
-export default () => {
+const RoleIndex = () => {
   const modal = useModal(RoleModal)
-
   const actionRef = useRef<ActionType>()
+  const dataSourceRef = useRef<any>()
   const columns: ProColumns<API.RoleEntity>[] = [
     ...baseColumns,
     {
@@ -60,17 +34,24 @@ export default () => {
       width: 160,
       fixed: 'right',
       render: (_text, record) => [
-        <Button type="link" key="edit" onClick={() => roleUpdate(modal, record, actionRef)}>
+        <Button type="link" key="edit" onClick={() => roleCreateOrUpdate(modal, actionRef, record)}>
           编辑
         </Button>,
-        <Button type="link" key="delete" onClick={() => deleteConfirm(record, actionRef)}>
-          删除
-        </Button>
+        <Popconfirm
+          key="delete"
+          title="确认删除吗？"
+          onConfirm={async () => {
+            await Api.systemRole.roleDelete({ id: record.id })
+            actionRef?.current?.reload()
+          }}
+        >
+          <Button type="link" danger>
+            删除
+          </Button>
+        </Popconfirm>
       ]
     }
   ]
-
-  const dataSourceRef = useRef<any>()
 
   return (
     <ProTable<API.RoleEntity>
@@ -86,10 +67,12 @@ export default () => {
       dateFormatter="string"
       scroll={{ y: 800 }}
       toolBarRender={() => [
-        <Button type="primary" key="primary" onClick={() => roleCreate(modal, actionRef)}>
+        <Button type="primary" key="primary" onClick={() => roleCreateOrUpdate(modal, actionRef)}>
           新增
         </Button>
       ]}
     />
   )
 }
+
+export default RoleIndex

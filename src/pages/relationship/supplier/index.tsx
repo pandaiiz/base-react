@@ -1,43 +1,29 @@
 import { ActionType, ProColumns } from '@ant-design/pro-components'
 import { ProTable } from '@ant-design/pro-components'
-import { Button, Modal } from 'antd'
+import { Button, Popconfirm } from 'antd'
 import { baseColumns } from '@/pages/relationship/supplier/columns'
 import { useRef } from 'react'
 import { useModal } from '@ebay/nice-modal-react'
 import { EditModal } from '@/pages/relationship/supplier/edit-modal'
 
-import { ExclamationCircleFilled } from '@ant-design/icons'
 import { Api } from '@/api'
 import { relationshipSupplierList } from '@/api/backend/api/relationshipSupplier.ts'
+import SupplierEntity = API.SupplierEntity
 
-export type TableListItem = any
-const { confirm } = Modal
-const deleteConfirm = (record: any, ref: any) => {
-  confirm({
-    title: '确认删除吗？',
-    icon: <ExclamationCircleFilled />,
-    content: '删除后不可恢复！',
-    onOk() {
-      Api.systemDictType.dictTypeDelete({ id: record.id }).then(() => ref.current.reload())
-    }
-  })
-}
-const dictTypeCreate = async (modal: any, ref: any) => {
-  await modal.show()
+const supplierCreateOrUpdate = async (modal: any, ref: any, data?: any) => {
+  if (data) {
+    await modal.show({ data, type: 'edit' })
+  } else {
+    await modal.show()
+  }
   modal.remove()
   ref.current?.reload()
 }
 
-const dictTypeUpdate = async (modal: any, record: any, ref: any) => {
-  await modal.show({ data: record, type: 'edit' })
-  modal.remove()
-  ref.current?.reload()
-}
-
-export default () => {
+const SupplierIndex = () => {
   const modal = useModal(EditModal)
   const actionRef = useRef<ActionType>()
-  const columns: ProColumns<TableListItem>[] = [
+  const columns: ProColumns<SupplierEntity>[] = [
     ...baseColumns,
     {
       title: '操作',
@@ -47,23 +33,31 @@ export default () => {
       width: 160,
       fixed: 'right',
       render: (_text, record) => [
-        <Button type="link" key="edit" onClick={() => dictTypeUpdate(modal, record, actionRef)}>
+        <Button
+          type="link"
+          key="edit"
+          onClick={() => supplierCreateOrUpdate(modal, actionRef, record)}
+        >
           编辑
         </Button>,
-        <Button type="link" key="delete" onClick={() => deleteConfirm(record, actionRef)}>
-          删除
-        </Button>
+        <Popconfirm
+          key="delete"
+          title="确认删除吗？"
+          onConfirm={async () => {
+            await Api.relationshipSupplier.relationshipSupplierDelete({ id: record.id })
+            actionRef?.current?.reload()
+          }}
+        >
+          <Button type="link" danger>
+            删除
+          </Button>
+        </Popconfirm>
       ]
     }
   ]
 
-  const dataSourceRef = useRef<any>()
-
   return (
-    <ProTable<TableListItem>
-      onDataSourceChange={(data) => {
-        dataSourceRef.current = data
-      }}
+    <ProTable<SupplierEntity>
       columns={columns}
       actionRef={actionRef}
       request={(params) => relationshipSupplierList(params as API.SupplierListParams)}
@@ -78,10 +72,15 @@ export default () => {
       dateFormatter="string"
       scroll={{ y: 800 }}
       toolBarRender={() => [
-        <Button type="primary" key="primary" onClick={() => dictTypeCreate(modal, actionRef)}>
+        <Button
+          type="primary"
+          key="primary"
+          onClick={() => supplierCreateOrUpdate(modal, actionRef)}
+        >
           新增
         </Button>
       ]}
     />
   )
 }
+export default SupplierIndex

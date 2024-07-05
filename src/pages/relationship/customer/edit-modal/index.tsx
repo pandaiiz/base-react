@@ -1,18 +1,20 @@
 import { Modal } from 'antd'
 import NiceModal, { useModal } from '@ebay/nice-modal-react'
-import { ProForm, ProFormDigit, ProFormInstance, ProFormText } from '@ant-design/pro-components'
+import { ProForm, ProFormInstance, ProFormText } from '@ant-design/pro-components'
 import { useRef } from 'react'
 import { Api } from '@/api'
+import CustomerEntity = API.CustomerEntity
 
-const DeptModal = NiceModal.create(({ data, type = 'add' }: { data: any; type: string }) => {
+const EditModal = NiceModal.create(({ data, type = 'add' }: { data: any; type: string }) => {
   const modal = useModal()
   const formRef = useRef<ProFormInstance>()
+
   const onOk = async () => {
     const values = await formRef.current?.validateFields?.()
     if (type === 'add') {
-      await Api.systemDept.deptCreate(values)
+      await Api.relationshipCustomer.relationshipCustomerCreate(values)
     } else {
-      await Api.systemDept.deptUpdate({ id: data.id }, values)
+      await Api.relationshipCustomer.relationshipCustomerUpdate({ id: data.id }, values)
     }
     modal.resolve(values)
   }
@@ -24,19 +26,18 @@ const DeptModal = NiceModal.create(({ data, type = 'add' }: { data: any; type: s
       onCancel={modal.remove}
       maskClosable={false}
     >
-      <ProForm<API.DeptEntity>
+      <ProForm<CustomerEntity>
         formRef={formRef}
-        initialValues={data}
+        initialValues={data || { status: 1 }}
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 16 }}
         submitter={false}
         layout="horizontal"
       >
-        <ProFormText rules={[{ required: true }]} name="name" label="部门名称" />
-        <ProFormDigit label="排序号" name="sort" min={0} max={255} fieldProps={{ precision: 0 }} />
+        <ProFormText rules={[{ required: true }]} name="name" label="客户名称" />
+        <ProFormText rules={[{ required: true }]} name="code" label="客户编码" />
       </ProForm>
     </Modal>
   )
 })
-
-export default DeptModal
+export default EditModal
