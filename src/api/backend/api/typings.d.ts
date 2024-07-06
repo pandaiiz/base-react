@@ -248,6 +248,13 @@ declare namespace API {
     createdAt: string
     updatedAt: string
   }
+  type MaterialEntity = {
+    name: string
+    code: string
+    id: number
+    createdAt: string
+    updatedAt: string
+  }
   type CustomerEntity = {
     name: string
     code: string

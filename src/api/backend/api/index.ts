@@ -26,6 +26,7 @@ import * as businessTodo from './businessTodo'
 import * as relationshipSupplier from './relationshipSupplier'
 import * as relationshipCustomer from './relationshipCustomer'
 import * as relationshipEmployee from './relationshipEmployee'
+import * as relationshipMaterial from './relationshipMaterial'
 export default {
   auth,
   account,
@@ -52,5 +53,6 @@ export default {
   businessTodo,
   relationshipSupplier,
   relationshipCustomer,
-  relationshipEmployee
+  relationshipEmployee,
+  relationshipMaterial
 }
