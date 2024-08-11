@@ -27,6 +27,7 @@ import * as relationshipSupplier from './relationshipSupplier'
 import * as relationshipCustomer from './relationshipCustomer'
 import * as relationshipEmployee from './relationshipEmployee'
 import * as relationshipMaterial from './relationshipMaterial'
+import * as ioOrder from './ioOrder'
 export default {
   auth,
   account,
@@ -54,5 +55,6 @@ export default {
   relationshipSupplier,
   relationshipCustomer,
   relationshipEmployee,
-  relationshipMaterial
+  relationshipMaterial,
+  ioOrder
 }
