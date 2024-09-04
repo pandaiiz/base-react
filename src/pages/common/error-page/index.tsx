@@ -1,14 +1,26 @@
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { Button, Result } from 'antd'
+import { useNavigate } from 'react-router-dom'
 
 const ErrorPage = () => {
-  const [notFound, setNotFound] = useState(false);
-  const { pathname } = useLocation();
-  const navigate = useNavigate();
-  useEffect(() => {
-    navigate(pathname);
-    setNotFound(true);
-  }, [navigate, pathname]);
-  return notFound && <>404</>;
-};
-export default ErrorPage;
+  const navigate = useNavigate()
+  return (
+    <Result
+      status="404"
+      title="404"
+      subTitle="此页面不存在！"
+      extra={
+        <Button
+          type="primary"
+          onClick={() =>
+            navigate('/', {
+              replace: true
+            })
+          }
+        >
+          返回主页面
+        </Button>
+      }
+    />
+  )
+}
+export default ErrorPage

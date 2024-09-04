@@ -5,19 +5,17 @@ import {
   ProFormDigit,
   ProFormInstance,
   ProFormRadio,
-  ProFormSelect,
   ProFormText,
   ProFormTextArea
 } from '@ant-design/pro-components'
 import { useRef } from 'react'
-import { dictTypeGetAll } from '@/api/backend/api/systemDictType.ts'
 import { Api } from '@/api'
 
 const DictItemModal = NiceModal.create(({ data, type = 'add' }: { data: any; type: string }) => {
   const modal = useModal()
   const formRef = useRef<ProFormInstance>()
   const onOK = async () => {
-    const values = await formRef.current?.validateFields?.()
+    const values = { ...(await formRef.current?.validateFields?.()), typeId: data.typeId }
     if (type === 'add') {
       await Api.systemDictItem.dictItemCreate(values as API.DictItemDto)
     } else {
@@ -45,20 +43,6 @@ const DictItemModal = NiceModal.create(({ data, type = 'add' }: { data: any; typ
         submitter={false}
         layout="horizontal"
       >
-        <ProFormSelect
-          rules={[{ required: true }]}
-          name="typeId"
-          label="所属字典类型"
-          request={() => dictTypeGetAll()}
-          disabled={data}
-          fieldProps={{
-            fieldNames: {
-              value: 'id',
-              label: 'name'
-            },
-            showSearch: true
-          }}
-        />
         <ProFormText rules={[{ required: true }]} name="label" label="字典项名称" />
         <ProFormText rules={[{ required: true }]} name="value" label="字典项值" />
         <ProFormDigit label="排序号" name="sort" min={0} max={255} fieldProps={{ precision: 0 }} />

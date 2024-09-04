@@ -129,7 +129,6 @@ export const baseColumns: ProColumns<API.UserEntity>[] = [
   },
   {
     align: 'center',
-    align: 'center',
     title: '状态',
     dataIndex: 'status',
     width: 80,

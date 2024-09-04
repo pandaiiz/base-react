@@ -1,7 +1,8 @@
-import './App.css'
 import { ConfigProvider } from 'antd'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import useRouters from '@/routers'
+import { App as AntdApp } from 'antd'
+import NiceModal from '@ebay/nice-modal-react'
 
 function App() {
   const routers = useRouters()
@@ -16,7 +17,11 @@ function App() {
         }
       }
     >
-      <RouterProvider router={createBrowserRouter(routers)} />
+      <AntdApp>
+        <NiceModal.Provider>
+          <RouterProvider router={createBrowserRouter(routers)} />
+        </NiceModal.Provider>
+      </AntdApp>
     </ConfigProvider>
   )
 }

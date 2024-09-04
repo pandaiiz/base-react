@@ -1,10 +1,10 @@
 import { ActionType, ProColumns } from '@ant-design/pro-components'
 import { ProTable } from '@ant-design/pro-components'
 import { Button, Popconfirm } from 'antd'
-import { baseColumns } from '@/pages/system/dict/columns.tsx'
+import { baseColumns } from '@/pages/system/dict-type/columns'
 import { useRef } from 'react'
 import { useModal } from '@ebay/nice-modal-react'
-import DictTypeModal from '@/pages/system/dict/dict-modal'
+import DictTypeModal from '@/pages/system/dict-type/dict-modal'
 import { Api } from '@/api'
 import { dictTypeList } from '@/api/backend/api/systemDictType.ts'
 import DictTypeEntity = API.DictTypeEntity

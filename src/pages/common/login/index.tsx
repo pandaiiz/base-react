@@ -1,82 +1,81 @@
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import {
-  LoginForm,
-  ProConfigProvider,
-  ProFormText
-} from '@ant-design/pro-components';
-import { theme } from 'antd';
-import reactLogo from '../../../assets/react.svg';
-import { useTokenStore, useUserStore } from '@/stores/user.store.ts';
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { LockOutlined, UserOutlined } from '@ant-design/icons'
+import { LoginForm, ProFormText } from '@ant-design/pro-components'
+import reactLogo from '../../../assets/react.svg'
+import { useNavigate } from 'react-router-dom'
+import { useSystemStore } from '@/stores/system.store'
+import { accountInfo, accountMenus, accountPermissions, login } from './api'
+import { FC, useEffect } from 'react'
+import { useRequest, useAsyncEffect } from 'ahooks'
 
-export default  () => {
-  const { token } = theme.useToken();
-  const navigate = useNavigate();
-  const { login, loginToken } = useTokenStore((state) => ({
-    login: state.login,
-    loginToken: state.token
-  }));
+export const Login: FC = () => {
+  const navigate = useNavigate()
+  const { setUserInfo, setToken, token, setMenuList, setPermissions, setIsLoggedIn } =
+    useSystemStore((state) => ({
+      token: state.token,
+      setToken: state.setToken,
+      setUserInfo: state.setUserInfo,
+      setMenuList: state.setMenuList,
+      setPermissions: state.setPermissions,
+      setIsLoggedIn: state.setIsLoggedIn
+    }))
 
-  const { userInfo, getUserInfo } = useUserStore((state) => ({
-    userInfo: state.userInfo,
-    getUserInfo: state.getUserInfo
-  }));
+  const { data: tokenData, run: authLogin } = useRequest(login, {
+    manual: true
+  })
 
   useEffect(() => {
-    if (!loginToken) return;
-    if (userInfo && userInfo.id) {
-      navigate('/');
-      return;
-    }
-    getUserInfo();
-  }, [getUserInfo, loginToken, userInfo]);
+    if (tokenData?.token) setToken(tokenData.token)
+  }, [tokenData, setToken])
 
-  const onFinish = async (params: any) => {
-    login(params);
-  };
+  useAsyncEffect(async () => {
+    if (token) {
+      const [accountInfoResult, accountMenusResult, accountPermissionsResult] = await Promise.all([
+        accountInfo(),
+        accountMenus(),
+        accountPermissions()
+      ])
+      setUserInfo(accountInfoResult)
+      setMenuList(accountMenusResult)
+      setPermissions(accountPermissionsResult)
+      setIsLoggedIn(true)
+      navigate('/')
+    }
+  }, [token])
+
+  const onFinish = async (params: LoginDto) => {
+    authLogin(params)
+  }
 
   return (
-    <ProConfigProvider hashed={false}>
-      <div style={{ backgroundColor: token.colorBgContainer }}>
-        <LoginForm
-          logo={reactLogo}
-          title="Base"
-          subTitle="Billy's Base React App"
-          onFinish={onFinish}
-        >
-          <>
-            <ProFormText
-              name="username"
-              fieldProps={{
-                size: 'large',
-                prefix: <UserOutlined className={'prefixIcon'} />
-              }}
-              placeholder={'admin'}
-              rules={[
-                {
-                  required: true,
-                  message: '请输入用户名!'
-                }
-              ]}
-            />
-            <ProFormText.Password
-              name="password"
-              fieldProps={{
-                size: 'large',
-                prefix: <LockOutlined className={'prefixIcon'} />
-              }}
-              placeholder={'a123456'}
-              rules={[
-                {
-                  required: true,
-                  message: '请输入密码！'
-                }
-              ]}
-            />
-          </>
-        </LoginForm>
-      </div>
-    </ProConfigProvider>
-  );
-};
+    <LoginForm logo={reactLogo} title="Base" subTitle="Billy's Base React App" onFinish={onFinish}>
+      <ProFormText
+        name="username"
+        fieldProps={{
+          size: 'large',
+          prefix: <UserOutlined className={'prefixIcon'} />
+        }}
+        placeholder={'admin'}
+        rules={[
+          {
+            required: true,
+            message: '请输入用户名!'
+          }
+        ]}
+      />
+      <ProFormText.Password
+        name="password"
+        fieldProps={{
+          size: 'large',
+          prefix: <LockOutlined className={'prefixIcon'} />
+        }}
+        placeholder={'a123456'}
+        rules={[
+          {
+            required: true,
+            message: '请输入密码！'
+          }
+        ]}
+      />
+    </LoginForm>
+  )
+}

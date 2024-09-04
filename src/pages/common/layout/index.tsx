@@ -1,27 +1,26 @@
 import { LogoutOutlined } from '@ant-design/icons'
 import { PageContainer, ProConfigProvider, ProLayout } from '@ant-design/pro-components'
 import { ConfigProvider, Dropdown } from 'antd'
-import { Suspense, useEffect } from 'react'
+import { Suspense } from 'react'
 import { defaultSetting } from '@/config/default-setting.ts'
-import { usePermissionStore, useTokenStore, useUserStore } from '@/stores/user.store.ts'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { useSystemStore } from '@/stores/system.store'
 
 const Layout = () => {
-  const { menus, getPermissions } = usePermissionStore((state) => ({
-    menus: state.menus,
-    getPermissions: state.getPermissions
+  const { menuList, logout, userInfo } = useSystemStore((state) => ({
+    menuList: state.menuList,
+    logout: state.logout,
+    userInfo: state.userInfo,
+    setMenuList: state.setMenuList,
+    setPermissions: state.setPermissions
   }))
-  const logout = useTokenStore((state) => () => state.logout())
-  const userInfo = useUserStore((state) => state.userInfo)
+
   const navigate = useNavigate()
   const { pathname } = useLocation()
-  useEffect(() => {
-    if (menus.length === 0) getPermissions()
-  }, [getPermissions, menus.length])
 
   return (
-    menus &&
-    menus.length > 0 && (
+    menuList &&
+    menuList.length > 0 && (
       <div
         id="test-pro-layout"
         style={
@@ -50,10 +49,10 @@ const Layout = () => {
                 }}
                 siderMenuType="group"
                 menu={{
-                  request: async () => menus || []
+                  request: async () => menuList || []
                 }}
                 avatarProps={{
-                  src: 'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg',
+                  src: userInfo?.avatar,
                   size: 'small',
                   title: userInfo?.nickname,
                   render: (_props, dom) => {
@@ -65,7 +64,10 @@ const Layout = () => {
                               key: 'logout',
                               icon: <LogoutOutlined />,
                               label: '退出登录',
-                              onClick: () => logout()
+                              onClick: () => {
+                                logout()
+                                navigate('/login')
+                              }
                             }
                           ]
                         }}

@@ -1,21 +1,5 @@
 import { request, type RequestOptions } from '@/utils/request'
 
-/** 账户登出 GET /api/account/logout */
-export async function accountLogout(options?: RequestOptions) {
-  return request<any>('/account/logout', {
-    method: 'GET',
-    ...(options || {})
-  })
-}
-
-/** 获取菜单列表 GET /api/account/menus */
-export async function accountMenu(options?: RequestOptions) {
-  return request<API.AccountMenus[]>('/account/menus', {
-    method: 'GET',
-    ...(options || {})
-  })
-}
-
 /** 更改账户密码 POST /api/account/password */
 export async function accountPassword(body: API.PasswordUpdateDto, options?: RequestOptions) {
   return request<any>('/account/password', {

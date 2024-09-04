@@ -60,7 +60,7 @@ const MaterialIndex = () => {
     <ProTable<MaterialEntity>
       columns={columns}
       actionRef={actionRef}
-      request={(params) => relationshipMaterialList(params as API.MaterialListParams)}
+      request={(params) => relationshipMaterialList(params as any)}
       rowKey="id"
       pagination={{
         defaultPageSize: 10,
