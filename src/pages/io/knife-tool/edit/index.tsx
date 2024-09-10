@@ -4,6 +4,7 @@ import {
   ProForm,
   ProFormDigit,
   ProFormInstance,
+  ProFormRadio,
   ProFormSelect,
   ProFormText
 } from '@ant-design/pro-components'
@@ -12,6 +13,7 @@ import { addData, getDataList, updateData } from '@/utils/common'
 import { ToolDto, ToolEntity } from '../types'
 import { createDictItemByDictCode } from '@/pages/system/dict-item/api'
 import { nanoid } from 'nanoid'
+import { operationTypes } from '../columns'
 
 export const EditModal = NiceModal.create(
   ({ data, type = 'add' }: { data: ToolEntity; type: string }) => {
@@ -20,13 +22,14 @@ export const EditModal = NiceModal.create(
     const formRef = useRef<ProFormInstance>()
     const [form] = Form.useForm()
     const [messageApi, contextHolder] = message.useMessage()
+    const [currentOperationType, setCurrentOperationType] = useState()
 
-    const onOk = async (operationType: number) => {
+    const onOk = async () => {
       const values = await formRef.current?.validateFields?.()
       if (type === 'add') {
-        await addData('relationship/tool', { ...values, operationType })
+        await addData('io/knife-tool', values)
       } else {
-        await updateData('relationship/tool', { id: data.id }, { ...values, operationType })
+        await updateData(`io/knife-tool/${data.id}`, values)
       }
       modal.resolve(values)
     }
@@ -76,35 +79,34 @@ export const EditModal = NiceModal.create(
           </Popconfirm>
         }
         footer={
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Space>
-              <Button type="dashed" danger onClick={() => onOk(2)}>
-                刀具出库
-              </Button>
-              <Button onClick={() => onOk(1)}>刀具入库</Button>
-              <Button type="dashed" danger onClick={() => onOk(21)}>
-                刀具修磨发出
-              </Button>
-              <Button onClick={() => onOk(22)}>刀具修磨收回</Button>
-            </Space>
-            <Space>
-              <Button type="primary" onClick={() => onOk(11)}>
-                刀具借出
-              </Button>
-              <Button onClick={() => onOk(12)}>刀具归还</Button>
-            </Space>
-          </div>
+          <Space style={{ float: 'right' }}>
+            <Button onClick={() => modal.remove()}>取消</Button>
+            <Button type="primary" onClick={onOk}>
+              确定
+            </Button>
+          </Space>
         }
       >
         {contextHolder}
         <ProForm<ToolDto>
           formRef={formRef}
           initialValues={data || { status: 1, quantity: 1 }}
-          labelCol={{ span: 6 }}
-          wrapperCol={{ span: 16 }}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 18 }}
           submitter={false}
           layout="horizontal"
         >
+          <ProFormRadio.Group
+            rules={[{ required: true }]}
+            radioType="button"
+            fieldProps={{
+              buttonStyle: 'solid',
+              onChange: (e) => setCurrentOperationType(e.target.value)
+            }}
+            name="operationType"
+            label="操作类型"
+            options={operationTypes}
+          />
           <ProFormSelect
             name="name"
             showSearch
@@ -130,7 +132,21 @@ export const EditModal = NiceModal.create(
             fieldProps={{ precision: 0 }}
           />
           <ProFormSelect
+            rules={[
+              {
+                required:
+                  currentOperationType !== 11 &&
+                  currentOperationType !== 12 &&
+                  currentOperationType !== 31
+              }
+            ]}
+            disabled={
+              currentOperationType === 11 ||
+              currentOperationType === 12 ||
+              currentOperationType === 31
+            }
             name="supplierId"
+            showSearch
             label="供应商"
             request={async () => {
               const response = await getDataList('relationship/supplier', { pageSize: -1 })
@@ -141,10 +157,24 @@ export const EditModal = NiceModal.create(
             }}
           />
           <ProFormSelect
-            name="receiverId"
-            label="领取人员"
+            rules={[
+              {
+                required:
+                  currentOperationType === 11 ||
+                  currentOperationType === 12 ||
+                  currentOperationType === 31
+              }
+            ]}
+            disabled={
+              currentOperationType !== 11 &&
+              currentOperationType !== 12 &&
+              currentOperationType !== 31
+            }
+            name="deptId"
+            showSearch
+            label="部门"
             request={async () => {
-              const response = await getDataList('relationship/employee', { pageSize: -1 })
+              const response = await getDataList('system/depts', { pageSize: -1 })
               return response.map((item: any) => ({
                 label: item.name,
                 value: item.id

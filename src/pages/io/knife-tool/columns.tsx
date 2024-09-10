@@ -2,14 +2,74 @@ import { formatToDateTime } from '@/utils/dateUtil'
 import { ProColumns } from '@ant-design/pro-components'
 import { ToolEntity } from './types'
 import { getDataList } from '@/utils/common'
+import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons'
+import { Space } from 'antd'
+// 操作类型 1刀具入库 2刀具出库  11刀具收回 12刀具借出 21刀具修磨发出 22刀具修磨收回 31刀具报废
 
 export const operationTypes = [
-  { value: 2, label: '刀具出库', type: 'primary' },
-  { value: 1, label: '刀具入库' },
-  { value: 11, label: '刀具借出', type: 'primary' },
-  { value: 12, label: '刀具归还' },
-  { value: 21, label: '刀具修磨发出', type: 'primary' },
-  { value: 22, label: '刀具修磨收回' }
+  {
+    value: 12,
+    label: (
+      <Space>
+        刀具借出
+        <ArrowUpOutlined style={{ color: 'red' }} />
+      </Space>
+    )
+  },
+  {
+    value: 11,
+    label: (
+      <Space>
+        刀具归还
+        <ArrowDownOutlined style={{ color: 'lightgreen' }} />
+      </Space>
+    )
+  },
+  {
+    value: 2,
+    label: (
+      <Space>
+        刀具出库
+        <ArrowUpOutlined style={{ color: 'red' }} />
+      </Space>
+    )
+  },
+  {
+    value: 1,
+    label: (
+      <Space>
+        刀具入库
+        <ArrowDownOutlined style={{ color: 'lightgreen' }} />
+      </Space>
+    )
+  },
+  {
+    value: 22,
+    label: (
+      <Space>
+        刀具修磨发出
+        <ArrowUpOutlined style={{ color: 'red' }} />
+      </Space>
+    )
+  },
+  {
+    value: 21,
+    label: (
+      <Space>
+        刀具修磨收回
+        <ArrowDownOutlined style={{ color: 'lightgreen' }} />
+      </Space>
+    )
+  },
+  {
+    value: 31,
+    label: (
+      <Space>
+        刀具报废
+        <ArrowDownOutlined style={{ color: 'red' }} />
+      </Space>
+    )
+  }
 ]
 
 export const baseColumns: ProColumns<ToolEntity>[] = [
@@ -45,11 +105,11 @@ export const baseColumns: ProColumns<ToolEntity>[] = [
     hideInSearch: true
   },
   {
-    title: '领取人员',
-    dataIndex: 'receiverId',
-    render: (_, record) => record.receiver?.name,
+    title: '部门',
+    dataIndex: 'deptId',
+    render: (_, record) => record.dept?.name,
     request: async () => {
-      const response = await getDataList('relationship/employee', { pageSize: -1 })
+      const response = await getDataList('system/depts', { pageSize: -1 })
       return response.map((item: any) => ({
         label: item.name,
         value: item.id

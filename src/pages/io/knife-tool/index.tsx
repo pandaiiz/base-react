@@ -1,15 +1,15 @@
 import { ActionType, ProColumns } from '@ant-design/pro-components'
 import { ProTable } from '@ant-design/pro-components'
-import { Button, Popconfirm, Tag } from 'antd'
-import { baseColumns } from '@/pages/relationship/tool/columns'
+import { Button, Popconfirm, Segmented } from 'antd'
 import { useRef, useState } from 'react'
 import { useModal } from '@ebay/nice-modal-react'
-import { EditModal } from '@/pages/relationship/tool/edit'
 
 import { ToolEntity, ToolListParams } from './types'
 import { deleteData, getDataList } from '@/utils/common'
 import { ReportModal } from './report'
 import { PassWordConfirmModal } from '@/components/common/PasswordConfirm'
+import { EditModal } from './edit'
+import { baseColumns } from './columns'
 
 const toolCreateOrUpdate = async (modal: any, ref: any, data?: any) => {
   if (data) {
@@ -21,8 +21,9 @@ const toolCreateOrUpdate = async (modal: any, ref: any, data?: any) => {
   ref.current?.reload()
 }
 
-const MaterialIndex = () => {
-  const [summary, setSummary] = useState<any>({})
+const KnifeToolIndex = () => {
+  // const [summary, setSummary] = useState<any>({})
+  const [tableType, setTableType] = useState<string>('全部')
   const editModal = useModal(EditModal)
   const passWordConfirmModal = useModal(PassWordConfirmModal)
   const reportModal = useModal(ReportModal)
@@ -54,8 +55,12 @@ const MaterialIndex = () => {
           key="delete"
           title="确认删除吗？"
           onConfirm={async () => {
-            await deleteData('relationship/tool', record.id)
-            actionRef?.current?.reload()
+            const validatePass = await passWordConfirmModal.show()
+            if (validatePass) {
+              passWordConfirmModal.remove()
+              await deleteData('io/knife-tool', record.id)
+              actionRef?.current?.reload()
+            }
           }}
         >
           <Button type="link" danger>
@@ -71,11 +76,11 @@ const MaterialIndex = () => {
       columns={columns}
       actionRef={actionRef}
       request={async (params) => {
-        const { data, total, success, summary } = await getDataList<ToolEntity>(
-          'relationship/tool',
-          params
-        )
-        setSummary(summary)
+        const { data, total, success } = await getDataList<ToolEntity>('io/knife-tool', {
+          ...params,
+          tableType
+        })
+        // setSummary(summary)
         return {
           data,
           success,
@@ -93,12 +98,14 @@ const MaterialIndex = () => {
       dateFormatter="string"
       scroll={{ y: 800 }}
       toolBarRender={() => [
-        <Tag color="red">刀具入库：{summary[1] || 0}</Tag>,
-        <Tag color="red">刀具出库：{summary[2] || 0}</Tag>,
-        <Tag color="green">刀具借出：{summary[11] || 0}</Tag>,
-        <Tag color="green">刀具归还：{summary[12] || 0}</Tag>,
-        <Tag color="blue">刀具修磨发出：{summary[21] || 0}</Tag>,
-        <Tag color="blue">刀具修磨收回：{summary[22] || 0}</Tag>,
+        <Segmented<string>
+          options={['全部', '部门', '厂商', '修磨', '报废']}
+          value={tableType}
+          onChange={(value) => {
+            setTableType(value) // string
+            actionRef.current?.reload()
+          }}
+        />,
         <Button onClick={() => reportModal.show()}>报表</Button>,
         <Button
           type="primary"
@@ -108,7 +115,14 @@ const MaterialIndex = () => {
           新增
         </Button>
       ]}
+
+      /* { <Tag color="red">刀具入库：{summary[1] || 0}</Tag>,
+        <Tag color="red">刀具出库：{summary[2] || 0}</Tag>,
+        <Tag color="green">刀具借出：{summary[11] || 0}</Tag>,
+        <Tag color="green">刀具归还：{summary[12] || 0}</Tag>,
+        <Tag color="blue">刀具修磨发出：{summary[21] || 0}</Tag>,
+        <Tag color="blue">刀具修磨收回：{summary[22] || 0}</Tag>, } */
     />
   )
 }
-export default MaterialIndex
+export default KnifeToolIndex

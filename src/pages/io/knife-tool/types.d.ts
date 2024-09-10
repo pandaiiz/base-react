@@ -1,5 +1,5 @@
 export type ToolEntity = {
-  receiver: any
+  dept: any
   operationType: number
   /** 刀具ID */
   id: number
@@ -13,6 +13,7 @@ export type ToolEntity = {
   updatedAt: string
   /** 创建人 */
   creator: any
+  tableType: any
 }
 
 export type ToolListParams = ToolEntity & {

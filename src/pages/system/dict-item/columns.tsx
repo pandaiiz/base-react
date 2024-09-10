@@ -5,12 +5,6 @@ import { dictTypeGetAll } from '@/api/backend/api/systemDictType.ts'
 
 export const baseColumns: ProColumns[] = [
   {
-    title: 'ID',
-    dataIndex: 'id',
-    width: 60,
-    hideInSearch: true
-  },
-  {
     title: '字典名称',
     dataIndex: 'typeId',
     hideInTable: true,
@@ -40,11 +34,6 @@ export const baseColumns: ProColumns[] = [
     hideInSearch: true
   },
   {
-    title: '备注',
-    dataIndex: 'remark',
-    hideInSearch: true
-  },
-  {
     title: '状态',
     dataIndex: 'status',
     width: 100,
@@ -55,6 +44,11 @@ export const baseColumns: ProColumns[] = [
       const text = enable ? '启用' : '停用'
       return <Tag color={color}>{text}</Tag>
     },
+    hideInSearch: true
+  },
+  {
+    title: '备注',
+    dataIndex: 'remark',
     hideInSearch: true
   },
   {

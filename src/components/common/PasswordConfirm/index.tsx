@@ -22,6 +22,7 @@ export const PassWordConfirmModal = NiceModal.create(() => {
       onOk={onOk}
       open={modal.visible}
       onClose={modal.remove}
+      onCancel={modal.remove}
       maskClosable={false}
     >
       {contextHolder}

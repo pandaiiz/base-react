@@ -185,7 +185,7 @@ export async function addData<T>(path: string, data: T, options?: RequestOptions
   return request<T>(`/${path}`, {
     method: 'POST',
     data,
-    ...(options || {})
+    ...(options || { successMsg: '新增成功！' })
   })
 }
 
@@ -194,7 +194,7 @@ export async function updateData<T>(path: string, data: T, options?: RequestOpti
   return request<T>(`/${path}`, {
     method: 'PUT',
     data,
-    ...(options || {})
+    ...(options || { successMsg: '更新成功！' })
   })
 }
 
@@ -202,6 +202,6 @@ export async function updateData<T>(path: string, data: T, options?: RequestOpti
 export async function deleteData<T>(path: string, id: string | number, options?: RequestOptions) {
   return request<T>(`/${path}/${id}`, {
     method: 'DELETE',
-    ...(options || {})
+    ...(options || { successMsg: '删除成功！' })
   })
 }

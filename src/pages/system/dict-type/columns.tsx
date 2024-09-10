@@ -13,7 +13,7 @@ export const baseColumns: ProColumns[] = [
   },
   {
     title: '字典名称',
-    dataIndex: 'name'
+    dataIndex: 'label'
   },
   {
     title: '字典编码',
