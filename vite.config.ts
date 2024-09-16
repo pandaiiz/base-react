@@ -20,6 +20,13 @@ export default defineConfig({
         changeOrigin: true
         // rewrite: (path) => path.replace(/^\/api/, '')
       },
+      '/static': {
+        target: 'http://127.0.0.1:7001/static',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(new RegExp(`^/static`), '')
+
+        // rewrite: (path) => path.replace(/^\/api/, '')
+      },
       '/upload': {
         target: 'http://127.0.0.1:7001/upload',
         changeOrigin: true,

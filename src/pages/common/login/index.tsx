@@ -49,6 +49,7 @@ export const Login: FC = () => {
   return (
     <LoginForm logo={reactLogo} title="Base" subTitle="Billy's Base React App" onFinish={onFinish}>
       <ProFormText
+        initialValue={'admin'}
         name="username"
         fieldProps={{
           size: 'large',
@@ -63,6 +64,7 @@ export const Login: FC = () => {
         ]}
       />
       <ProFormText.Password
+        initialValue={'a123456'}
         name="password"
         fieldProps={{
           size: 'large',

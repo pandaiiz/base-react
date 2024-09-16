@@ -118,6 +118,7 @@ declare namespace API {
   }
 
   type DeptEntity = {
+    useKnifeTool: boolean
     /** 部门名称 */
     name: string
     /** 排序 */
@@ -684,8 +685,6 @@ declare namespace API {
     sizeTrend: SpaceInfo
   }
 
-  type Pagination = {}
-
   type ParamConfigDeleteParams = {
     id: number
   }
@@ -978,8 +977,6 @@ declare namespace API {
     _t?: number
   }
 
-  type String = {}
-
   type TaskDeleteParams = {
     id: number
   }
@@ -1211,6 +1208,7 @@ declare namespace API {
   }
 
   type UserEntity = {
+    roleIds?: number[]
     username: string
     password: string
     psalt: string

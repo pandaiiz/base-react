@@ -1,15 +1,16 @@
 import { ActionType, ProColumns } from '@ant-design/pro-components'
 import { ProTable } from '@ant-design/pro-components'
-import { Button, Popconfirm, Segmented } from 'antd'
+import { Button, Popconfirm, Segmented, Tag } from 'antd'
 import { useRef, useState } from 'react'
 import { useModal } from '@ebay/nice-modal-react'
 
 import { ToolEntity, ToolListParams } from './types'
 import { deleteData, getDataList } from '@/utils/common'
-import { ReportModal } from './report'
 import { PassWordConfirmModal } from '@/components/common/PasswordConfirm'
 import { EditModal } from './edit'
 import { baseColumns } from './columns'
+import Permission from '@/components/common/Permission'
+import { useNavigate } from 'react-router-dom'
 
 const toolCreateOrUpdate = async (modal: any, ref: any, data?: any) => {
   if (data) {
@@ -22,11 +23,11 @@ const toolCreateOrUpdate = async (modal: any, ref: any, data?: any) => {
 }
 
 const KnifeToolIndex = () => {
-  // const [summary, setSummary] = useState<any>({})
   const [tableType, setTableType] = useState<string>('全部')
+  const [summaryData, setSummaryData] = useState<any>({})
   const editModal = useModal(EditModal)
+  const navigate = useNavigate()
   const passWordConfirmModal = useModal(PassWordConfirmModal)
-  const reportModal = useModal(ReportModal)
   const actionRef = useRef<ActionType>()
   const columns: ProColumns<ToolEntity>[] = [
     ...baseColumns,
@@ -71,16 +72,72 @@ const KnifeToolIndex = () => {
     }
   ]
 
+  const RenderTag = () => {
+    switch (tableType) {
+      /* case '全部':
+        return (
+          <>
+            <Tag color="green">刀具入库：{summaryData[1] || 0}</Tag>
+            <Tag color="red">刀具出库：{summaryData[2] || 0}</Tag>
+            <Tag color="green">刀具归还：{summaryData[12] || 0}</Tag>
+            <Tag color="red">刀具借出：{summaryData[11] || 0}</Tag>
+            <Tag color="green">修磨收回：{summaryData[22] || 0}</Tag>
+            <Tag color="red">修磨发出：{summaryData[21] || 0}</Tag>
+            <Tag color="red">员工报废：{summaryData[31] || 0}</Tag>
+            <Tag color="red">修磨报废：{summaryData[32] || 0}</Tag>
+          </>
+        ) */
+      case '部门':
+        return (
+          <>
+            <Tag color="green">刀具归还：{summaryData[11] || 0}</Tag>
+            <Tag color="red">刀具借出：{summaryData[12] || 0}</Tag>
+            <Tag color="red">员工报废：{summaryData[31] || 0}</Tag>
+            <Tag color="blue">
+              余量：{(summaryData[12] || 0) - (summaryData[11] || 0) - (summaryData[31] || 0)}
+            </Tag>
+          </>
+        )
+      case '厂商':
+        return (
+          <>
+            <Tag color="green">刀具入库：{summaryData[1] || 0}</Tag>
+            <Tag color="red">刀具出库：{summaryData[2] || 0}</Tag>
+          </>
+        )
+      case '修磨':
+        return (
+          <>
+            <Tag color="green">修磨收回：{summaryData[21] || 0}</Tag>
+            <Tag color="red">修磨发出：{summaryData[22] || 0}</Tag>
+            <Tag color="red">修磨报废：{summaryData[32] || 0}</Tag>
+            <Tag color="blue">
+              余量：{(summaryData[22] || 0) - (summaryData[21] || 0) - (summaryData[32] || 0)}
+            </Tag>
+          </>
+        )
+      case '报废':
+        return (
+          <>
+            <Tag color="red">员工报废：{summaryData[31] || 0}</Tag>
+            <Tag color="red">修磨报废：{summaryData[32] || 0}</Tag>
+          </>
+        )
+      default:
+        return <></>
+    }
+  }
+
   return (
     <ProTable<ToolEntity, ToolListParams>
       columns={columns}
       actionRef={actionRef}
       request={async (params) => {
-        const { data, total, success } = await getDataList<ToolEntity>('io/knife-tool', {
+        const { data, total, success, summary } = await getDataList<ToolEntity>('io/knife-tool', {
           ...params,
           tableType
         })
-        // setSummary(summary)
+        setSummaryData(summary)
         return {
           data,
           success,
@@ -98,6 +155,7 @@ const KnifeToolIndex = () => {
       dateFormatter="string"
       scroll={{ y: 800 }}
       toolBarRender={() => [
+        <RenderTag />,
         <Segmented<string>
           options={['全部', '部门', '厂商', '修磨', '报废']}
           value={tableType}
@@ -106,22 +164,17 @@ const KnifeToolIndex = () => {
             actionRef.current?.reload()
           }}
         />,
-        <Button onClick={() => reportModal.show()}>报表</Button>,
-        <Button
-          type="primary"
-          key="primary"
-          onClick={() => toolCreateOrUpdate(editModal, actionRef)}
-        >
-          新增
-        </Button>
+        <Button onClick={() => navigate('/report/knife-tool')}>报表</Button>,
+        <Permission permissionName="io:knife-tool:create">
+          <Button
+            type="primary"
+            key="primary"
+            onClick={() => toolCreateOrUpdate(editModal, actionRef)}
+          >
+            新增
+          </Button>
+        </Permission>
       ]}
-
-      /* { <Tag color="red">刀具入库：{summary[1] || 0}</Tag>,
-        <Tag color="red">刀具出库：{summary[2] || 0}</Tag>,
-        <Tag color="green">刀具借出：{summary[11] || 0}</Tag>,
-        <Tag color="green">刀具归还：{summary[12] || 0}</Tag>,
-        <Tag color="blue">刀具修磨发出：{summary[21] || 0}</Tag>,
-        <Tag color="blue">刀具修磨收回：{summary[22] || 0}</Tag>, } */
     />
   )
 }

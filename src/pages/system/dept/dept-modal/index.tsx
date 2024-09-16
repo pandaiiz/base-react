@@ -1,6 +1,12 @@
 import { Modal } from 'antd'
 import NiceModal, { useModal } from '@ebay/nice-modal-react'
-import { ProForm, ProFormDigit, ProFormInstance, ProFormText } from '@ant-design/pro-components'
+import {
+  ProForm,
+  ProFormDigit,
+  ProFormInstance,
+  ProFormSwitch,
+  ProFormText
+} from '@ant-design/pro-components'
 import { useRef } from 'react'
 import { Api } from '@/api'
 
@@ -33,6 +39,7 @@ const DeptModal = NiceModal.create(({ data, type = 'add' }: { data: any; type: s
         layout="horizontal"
       >
         <ProFormText rules={[{ required: true }]} name="name" label="部门名称" />
+        <ProFormSwitch name="useKnifeTool" label="使用刀具" />
         <ProFormDigit label="排序号" name="sort" min={0} max={255} fieldProps={{ precision: 0 }} />
       </ProForm>
     </Modal>

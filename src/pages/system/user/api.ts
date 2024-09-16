@@ -31,9 +31,7 @@ export async function menuList(params?: API.MenuListParams) {
 
 /** 新增用户 POST /api/system/users */
 export async function userCreate(body: API.UserDto) {
-  return request.post<any>('/system/users', {
-    data: body
-  })
+  return request.post<any>('/system/users', body)
 }
 
 /** 查询用户 GET /api/system/users/${param0} */
@@ -47,14 +45,10 @@ export async function userRead(params: API.UserReadParams) {
 /** 更新用户 PUT /api/system/users/${param0} */
 export async function userUpdate(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.UserUpdateParams,
+  id: string | number,
   body: API.UserUpdateDto
 ) {
-  const { id: param0, ...queryParams } = params
-  return request.put<any>(`/system/users/${param0}`, {
-    params: { ...queryParams },
-    data: body
-  })
+  return request.put<any>(`/system/users/${id}`, body)
 }
 /** 删除用户 DELETE /api/system/users/${param0} */
 export async function userDelete(

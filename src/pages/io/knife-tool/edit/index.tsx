@@ -174,7 +174,10 @@ export const EditModal = NiceModal.create(
             showSearch
             label="部门"
             request={async () => {
-              const response = await getDataList('system/depts', { pageSize: -1 })
+              const response = await getDataList('system/depts', {
+                pageSize: -1,
+                useKnifeTool: true
+              })
               return response.map((item: any) => ({
                 label: item.name,
                 value: item.id

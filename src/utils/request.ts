@@ -1,5 +1,5 @@
 import axios, { CanceledError } from 'axios'
-import { message as $message, Modal } from 'antd'
+import { message as $message } from 'antd'
 import type { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { ResultEnum } from '@/enums/httpEnum'
 import { isString } from 'lodash'
@@ -37,10 +37,14 @@ service.interceptors.response.use(
   (response: AxiosResponse<BaseResponse>) => {
     const { data: res } = response
     if (res.code !== ResultEnum.SUCCESS) {
-      $message.error(res.message || UNKNOWN_ERROR)
-
+      $message.open({
+        content: res.message || UNKNOWN_ERROR,
+        type: 'error'
+      })
       if ([1101, 1105].includes(res.code)) {
-        Modal.confirm({
+        useSystemStore.getState().logout()
+        window.location.href = '/login'
+        /* Modal.confirm({
           title: '警告',
           content: res.message || '账号异常，您可以取消停留在该页上，或重新登录',
           okText: '重新登录',
@@ -49,9 +53,8 @@ service.interceptors.response.use(
             useSystemStore.getState().logout()
             window.location.href = '/login'
           }
-        })
+        }) */
       }
-
       const error = new Error(res.message || UNKNOWN_ERROR) as Error & { code: any }
       error.code = res.code
       return Promise.reject(error)
@@ -62,7 +65,12 @@ service.interceptors.response.use(
   (error) => {
     if (!(error instanceof CanceledError)) {
       const errMsg = error?.response?.data?.message ?? UNKNOWN_ERROR
-      $message.error({ content: errMsg, key: errMsg })
+
+      $message.open({
+        content: errMsg,
+        key: errMsg,
+        type: 'error'
+      })
       error.message = errMsg
       if (error.response?.status === 401) {
         localStorage.clear()
@@ -109,9 +117,15 @@ export async function request(_url: string | RequestOptions, _config: RequestOpt
     if (code === ResultEnum.SUCCESS) {
       const { successMsg, showSuccessMsg } = config
       if (successMsg) {
-        $message.success(successMsg)
+        $message.open({
+          content: successMsg,
+          type: 'success'
+        })
       } else if (showSuccessMsg && message) {
-        $message.success(message)
+        $message.open({
+          content: message,
+          type: 'success'
+        })
       }
     }
 

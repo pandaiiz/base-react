@@ -65,7 +65,16 @@ export const operationTypes = [
     value: 31,
     label: (
       <Space>
-        刀具报废
+        员工报废
+        <ArrowDownOutlined style={{ color: 'red' }} />
+      </Space>
+    )
+  },
+  {
+    value: 32,
+    label: (
+      <Space>
+        修磨报废
         <ArrowDownOutlined style={{ color: 'red' }} />
       </Space>
     )
@@ -109,7 +118,7 @@ export const baseColumns: ProColumns<ToolEntity>[] = [
     dataIndex: 'deptId',
     render: (_, record) => record.dept?.name,
     request: async () => {
-      const response = await getDataList('system/depts', { pageSize: -1 })
+      const response = await getDataList('system/depts', { pageSize: -1, useKnifeTool: true })
       return response.map((item: any) => ({
         label: item.name,
         value: item.id

@@ -1,45 +1,45 @@
-import { ActionType, ProColumns } from '@ant-design/pro-components'
-import { ProTable } from '@ant-design/pro-components'
-import { useRef } from 'react'
+import { useState } from 'react'
 
-import { getDataList } from '@/utils/common'
-import { baseColumns } from './columns'
+import { Card, DatePicker, Divider, Segmented, TimeRangePickerProps } from 'antd'
+import DeptReport from './report/dept-report'
+import SupplierReport from './report/supplier-report'
+import PolishReport from './report/polish-report'
+import dayjs from 'dayjs'
+import type { Dayjs } from 'dayjs'
 
-const KnifeToolIndex = () => {
-  const actionRef = useRef<ActionType>()
-  const columns: ProColumns[] = [...baseColumns]
+const { RangePicker } = DatePicker
+const onRangeChange = (dates: null | (Dayjs | null)[], dateStrings: string[]) => {
+  if (dates) {
+    console.log('From: ', dates[0], ', to: ', dates[1])
+    console.log('From: ', dateStrings[0], ', to: ', dateStrings[1])
+  } else {
+    console.log('Clear')
+  }
+}
 
+const rangePresets: TimeRangePickerProps['presets'] = [
+  { label: '最近7天', value: [dayjs().subtract(7, 'day'), dayjs()] },
+  { label: '最近14天', value: [dayjs().subtract(14, 'day'), dayjs()] },
+  { label: '最近30天', value: [dayjs().subtract(30, 'day'), dayjs()] }
+]
+const KnifeToolReport = () => {
+  const [reportType, setReportType] = useState<string>('部门')
   return (
-    <ProTable<any>
-      columns={columns}
-      actionRef={actionRef}
-      request={async (params) => {
-        let data = await getDataList('io/knife-tool/report', params)
-        if (params.keyword) {
-          const keyword = params.keyword.toLowerCase()
-          data = data.filter(
-            (item: any) =>
-              item.name.toLowerCase().includes(keyword) ||
-              item.departments.some((dept: any) => dept.deptName.toLowerCase().includes(keyword)) ||
-              item.suppliers.some((supplier: any) =>
-                supplier.supplierName.toLowerCase().includes(keyword)
-              )
-          )
-        }
-        return {
-          data,
-          success: true
-        }
-      }}
-      rowKey="code"
-      pagination={false}
-      columnEmptyText={false}
-      dateFormatter="string"
-      scroll={{ y: 800 }}
-      options={{
-        search: true
-      }}
-    />
+    <Card>
+      <Segmented<string>
+        options={['部门', '修磨', '供应商']}
+        value={reportType}
+        onChange={(value) => {
+          setReportType(value)
+        }}
+      />
+      <RangePicker presets={rangePresets} onChange={onRangeChange} variant="filled" />
+
+      <Divider />
+      {reportType === '部门' && <DeptReport />}
+      {reportType === '修磨' && <PolishReport />}
+      {reportType === '供应商' && <SupplierReport />}
+    </Card>
   )
 }
-export default KnifeToolIndex
+export default KnifeToolReport

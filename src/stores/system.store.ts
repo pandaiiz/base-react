@@ -11,13 +11,14 @@ interface SystemState {
   setIsLoggedIn: (isLoggedIn: boolean) => void
   setUserInfo: (userInfo: UserInfo | null) => void
   setPermissions: (permissions: string[]) => void
+  hasPermission: (permission: string) => boolean
   setMenuList: (menuList: MenuItem[]) => void
   logout: () => void
 }
 
 export const useSystemStore = create<SystemState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       token: null,
       isLoggedIn: false,
       userInfo: null,
@@ -27,6 +28,7 @@ export const useSystemStore = create<SystemState>()(
       setIsLoggedIn: (isLoggedIn) => set({ isLoggedIn }),
       setUserInfo: (userInfo) => set({ userInfo }),
       setPermissions: (permissions) => set({ permissions }),
+      hasPermission: (permission: string) => get().permissions.includes(permission),
       setMenuList: (menuList) => set({ menuList }),
       logout: () =>
         set({

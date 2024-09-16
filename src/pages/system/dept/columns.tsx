@@ -1,5 +1,6 @@
 import { formatToDateTime } from '@/utils/dateUtil'
 import { ProColumns } from '@ant-design/pro-components'
+import { Tag } from 'antd'
 
 export const baseColumns: ProColumns<API.DeptEntity>[] = [
   {
@@ -11,6 +12,13 @@ export const baseColumns: ProColumns<API.DeptEntity>[] = [
     title: '排序',
     dataIndex: 'sort',
     hideInSearch: true
+  },
+  {
+    title: '使用刀具',
+    dataIndex: 'useKnifeTool',
+    hideInSearch: true,
+    render: (_, record) =>
+      record.useKnifeTool ? <Tag color="green">是</Tag> : <Tag color="red">否</Tag>
   },
   {
     title: '创建时间',

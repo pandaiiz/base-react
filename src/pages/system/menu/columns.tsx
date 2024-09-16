@@ -1,23 +1,17 @@
-// import type { TableColumn } from '@/components/core/dynamic-table';
-// import { Icon } from '@/components/basic/icon';
 import { formatToDateTime } from '@/utils/dateUtil'
 import { Tag } from 'antd'
 import { ProColumns } from '@ant-design/pro-components'
-import IconPicker from '@/components/basic/Icon'
-
-// export type TableListItem = API.MenuItemInfo;
-// export type TableColumnItem = TableColumn<TableListItem>;
 
 /**
  * 将对应菜单类型转为字符串字意
  */
 const getMenuType = (type: any) => {
   switch (type) {
-    case "CATALOG":
+    case 'CATALOG':
       return <Tag color="warning">目录</Tag>
-    case "MENU":
+    case 'MENU':
       return <Tag color="success">菜单</Tag>
-    case "ACCESS":
+    case 'ACCESS':
       return <Tag color="error">权限</Tag>
     default:
       return ''
@@ -30,14 +24,6 @@ export const baseColumns: ProColumns<API.MenuEntity>[] = [
     dataIndex: 'name',
     fixed: 'left',
     width: 140
-  },
-  {
-    title: '图标',
-    width: 40,
-    dataIndex: 'icon',
-    align: 'center',
-    hideInSearch: true,
-    render: (_, record) => record.icon && <IconPicker icon={record.icon} size={16} />
   },
   {
     title: '类型',
